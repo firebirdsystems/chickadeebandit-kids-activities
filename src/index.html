@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kids' Activities</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: var(--hub-bg, #f9fafb);
+      --surface: var(--hub-surface, #ffffff);
+      --border: var(--hub-border, #e5e7eb);
+      --border-mid: var(--hub-border, #d1d5db);
+      --text: var(--hub-text, #111827);
+      --muted: var(--hub-text-muted, #6b7280);
+      --accent: var(--hub-primary, #111827);
+      --accent-hover: var(--hub-primary-hover, #374151);
+      --accent-fg: var(--hub-primary-fg, #ffffff);
+      --radius: var(--hub-radius, 10px);
+      --green: #047857; --green-soft: #d1fae5;
+      --amber: #b45309; --amber-soft: #fef3c7;
+      --red: #b91c1c; --red-soft: #fee2e2;
+      --blue: #1d4ed8; --blue-soft: #dbeafe;
+      --shadow: 0 1px 3px rgba(15, 23, 42, .07);
+    }
+    body {
+      min-height: 100vh; background: var(--bg); color: var(--text);
+      font-family: var(--hub-font, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+      font-size: var(--hub-font-size, 15px); line-height: 1.5;
+    }
+    .app { max-width: 720px; margin: 0 auto; padding: 16px; }
+    .topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    h1 { font-size: 1.35rem; line-height: 1.2; }
+    h2 { font-size: .95rem; }
+    .muted { color: var(--muted); }
+    .tiny { font-size: .78rem; }
+    .stack { display: grid; gap: 8px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      border: 1px solid transparent; border-radius: 8px; padding: 8px 12px;
+      font: inherit; font-size: .86rem; font-weight: 700; cursor: pointer;
+      min-height: 38px; background: var(--accent); color: var(--accent-fg);
+    }
+    .btn:hover { background: var(--accent-hover); }
+    .btn:disabled { opacity: .48; cursor: default; }
+    .btn-ghost { background: transparent; color: var(--text); border-color: var(--border-mid); }
+    .btn-ghost:hover { background: rgba(127,127,127,.08); }
+    .btn-danger { background: var(--red-soft); color: var(--red); }
+    .btn-sm { min-height: 31px; padding: 5px 10px; font-size: .78rem; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px; }
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .tab {
+      border: 1px solid var(--border-mid); background: var(--surface); color: var(--text);
+      border-radius: 999px; padding: 5px 13px; font: inherit; font-size: .84rem; font-weight: 700; cursor: pointer;
+    }
+    .tab.active { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+    .section-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 18px 2px 8px; }
+    .row {
+      display: flex; align-items: center; gap: 11px; padding: 10px 12px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+    }
+    .row-icon { font-size: 1.15rem; width: 30px; text-align: center; flex-shrink: 0; }
+    .row-body { flex: 1; min-width: 0; }
+    .row-title { font-weight: 750; font-size: .92rem; }
+    .row-meta { color: var(--muted); font-size: .78rem; }
+    .row-side { flex-shrink: 0; text-align: right; display: grid; gap: 3px; justify-items: end; }
+    .pill {
+      display: inline-flex; align-items: center; min-height: 20px; padding: 1px 8px;
+      border-radius: 999px; white-space: nowrap; background: #f1f5f9; color: var(--muted);
+      font-size: .72rem; font-weight: 800;
+    }
+    .pill.today { background: var(--red-soft); color: var(--red); }
+    .pill.week { background: var(--amber-soft); color: var(--amber); }
+    .pill.game { background: var(--blue-soft); color: var(--blue); }
+    .edit-link { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: .76rem; font-weight: 700; padding: 2px 4px; }
+    .edit-link:hover { color: var(--text); text-decoration: underline; }
+    .gear-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .gear-chip {
+      display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px;
+      background: var(--surface); border: 1px solid var(--border-mid); border-radius: 999px;
+      font-size: .8rem; font-weight: 600;
+    }
+    .gear-chip button { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: .8rem; padding: 0 1px; }
+    .empty { color: var(--muted); text-align: center; padding: 30px 16px; }
+    .error { background: var(--red-soft); color: var(--red); padding: 9px 12px; border-radius: 8px; margin-bottom: 10px; font-size: .86rem; }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.42); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .modal { background: var(--surface); border-radius: 14px; padding: 22px; width: 100%; max-width: 470px; box-shadow: 0 20px 60px rgba(0,0,0,.25); max-height: 92vh; overflow-y: auto; }
+    .modal h2 { font-size: 1.05rem; margin-bottom: 16px; }
+    .form { display: grid; gap: 12px; }
+    .field { display: grid; gap: 5px; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    label { font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 800; }
+    input, select, textarea {
+      width: 100%; border: 1.5px solid var(--border-mid); border-radius: 8px;
+      padding: 9px 11px; font: inherit; background: var(--surface); color: var(--text);
+    }
+    textarea { min-height: 56px; resize: vertical; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+    .modal-actions { display: flex; gap: 8px; margin-top: 6px; justify-content: flex-end; }
+    .modal-left { margin-right: auto; }
+    .inline-add { display: flex; gap: 6px; }
+    .inline-add input { flex: 1; }
+    @media (max-width: 520px) { .grid2 { grid-template-columns: 1fr; } }
+  </style>
+  <base href="/run/kids-activities/">
+</head>
+<body>
+<div class="app">
+  <div id="root" class="empty">Loading…</div>
+</div>
+
+<script type="module">
+import { esc, isAdult, hubConfirm } from "/hub-sdk.js";
+import {
+  SESSION_KINDS, sessionKindMeta, upcomingSessions, pastSessions,
+  sessionDayLabel, fmtTimeRange, sortedActivities, isoDay,
+} from "./logic.js";
+
+const CONTEXT = window.__CONTEXT_URL ?? "";
+const DB = window.__DB_URL ?? "";
+const HUB_MEMBER = window.__CURRENT_MEMBER ?? null;
+
+let members = [];
+let memberMap = new Map();
+let me = null;
+let activities = [];
+let sessions = [];
+let gear = [];
+let currentActivityId = "all";
+let error = "";
+let modalEl = null;
+
+function nowIso() { return new Date().toISOString(); }
+function canManage() { return !!me && isAdult(me); }
+function memberName(id) { return memberMap.get(id)?.name ?? "Someone"; }
+
+/* ── DB helper ─────────────────────────────────────────────────────────────── */
+async function db(sql, params = []) {
+  if (!DB) return { rows: [] };
+  const res = await fetch(DB, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ sql, params }),
+  });
+  const json = await res.json();
+  if (json.error) throw new Error(json.error);
+  return json;
+}
+
+/* ── Loading ───────────────────────────────────────────────────────────────── */
+async function loadMembers() {
+  if (!CONTEXT) {
+    members = [
+      { id: "demo-1", name: "Alex", role: "adult" },
+      { id: "demo-3", name: "Casey", role: "child" },
+      { id: "demo-4", name: "Riley", role: "child" },
+    ];
+  } else {
+    try {
+      const res = await fetch(`${CONTEXT}?keys=family.members`);
+      members = ((await res.json())["family.members"]) ?? [];
+    } catch { members = []; }
+  }
+  memberMap = new Map(members.map((m) => [m.id, m]));
+  me = HUB_MEMBER ?? members[0] ?? { id: "guest", name: "Guest", role: "adult" };
+}
+
+async function loadData() {
+  if (!DB) {
+    const day = (offset) => isoDay(new Date(Date.now() + offset * 86400000));
+    activities = [
+      { id: "a1", member_id: "demo-3", name: "U10 Soccer", season: "Fall 2026", location: "Miller Park", coach_name: "Coach Dana", coach_contact: "555-0182", notes: "", emoji: "⚽", archived: 0, created_by: "demo-1", created_at: nowIso(), updated_at: nowIso() },
+      { id: "a2", member_id: "demo-4", name: "Piano", season: "", location: "Ms. Lee's studio", coach_name: "Ms. Lee", coach_contact: "", notes: "", emoji: "🎹", archived: 0, created_by: "demo-1", created_at: nowIso(), updated_at: nowIso() },
+    ];
+    sessions = [
+      { id: "s1", activity_id: "a1", kind: "practice", session_date: day(1), start_time: "17:30", end_time: "18:45", location: "", notes: "", created_by: "demo-1", created_at: nowIso() },
+      { id: "s2", activity_id: "a1", kind: "game", session_date: day(5), start_time: "09:00", end_time: "10:30", location: "Riverside Field 2", notes: "Wear white", created_by: "demo-1", created_at: nowIso() },
+      { id: "s3", activity_id: "a2", kind: "rehearsal", session_date: day(2), start_time: "16:00", end_time: "16:30", location: "", notes: "", created_by: "demo-1", created_at: nowIso() },
+    ];
+    gear = [
+      { id: "g1", activity_id: "a1", name: "Shin guards", sort_order: 0, created_by: "demo-1", created_at: nowIso() },
+      { id: "g2", activity_id: "a1", name: "Water bottle", sort_order: 1, created_by: "demo-1", created_at: nowIso() },
+    ];
+    return;
+  }
+  const [a, s, g] = await Promise.all([
+    db("SELECT id, member_id, name, season, location, coach_name, coach_contact, notes, emoji, archived, created_by, created_at, updated_at FROM app_kids_activities__activities WHERE archived = 0 ORDER BY created_at"),
+    db("SELECT id, activity_id, kind, session_date, start_time, end_time, location, notes, created_by, created_at FROM app_kids_activities__sessions ORDER BY session_date, start_time LIMIT 600"),
+    db("SELECT id, activity_id, name, sort_order, created_by, created_at FROM app_kids_activities__gear ORDER BY sort_order, created_at"),
+  ]);
+  activities = a.rows ?? [];
+  sessions = s.rows ?? [];
+  gear = g.rows ?? [];
+}
+
+async function refresh() {
+  error = "";
+  try {
+    await Promise.all([loadMembers(), loadData()]);
+    if (currentActivityId !== "all" && !activities.some((a) => a.id === currentActivityId)) currentActivityId = "all";
+    render();
+  } catch (e) { error = e.message; render(); }
+}
+
+function showError(msg) { error = msg; render(); }
+
+/* ── Mutations ─────────────────────────────────────────────────────────────── */
+async function saveActivity(fields, existingId) {
+  const now = nowIso();
+  if (existingId) {
+    const idx = activities.findIndex((a) => a.id === existingId);
+    const prev = idx !== -1 ? activities[idx] : null;
+    if (idx !== -1) activities[idx] = { ...activities[idx], ...fields, updated_at: now };
+    closeModal(); render();
+    try {
+      await db("UPDATE app_kids_activities__activities SET member_id=?, name=?, season=?, location=?, coach_name=?, coach_contact=?, notes=?, emoji=?, updated_at=? WHERE id=?",
+        [fields.member_id, fields.name, fields.season, fields.location, fields.coach_name, fields.coach_contact, fields.notes, fields.emoji, now, existingId]);
+    } catch (e) { if (idx !== -1 && prev) activities[idx] = prev; showError(e.message); }
+  } else {
+    const row = { id: crypto.randomUUID(), ...fields, archived: 0, created_by: me.id, created_at: now, updated_at: now };
+    activities = [...activities, row];
+    currentActivityId = row.id;
+    closeModal(); render();
+    try {
+      await db("INSERT INTO app_kids_activities__activities (id, member_id, name, season, location, coach_name, coach_contact, notes, emoji, archived, created_by, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,0,?,?,?)",
+        [row.id, row.member_id, row.name, row.season, row.location, row.coach_name, row.coach_contact, row.notes, row.emoji, row.created_by, now, now]);
+    } catch (e) {
+      activities = activities.filter((a) => a.id !== row.id);
+      currentActivityId = "all";
+      showError(e.message);
+    }
+  }
+}
+
+async function archiveActivity(id) {
+  const ok = await hubConfirm({ message: "Archive this activity?", description: "Season over? The schedule and gear list go with it.", confirmLabel: "Archive", destructive: true });
+  if (!ok) return;
+  const prev = activities;
+  activities = activities.filter((a) => a.id !== id);
+  if (currentActivityId === id) currentActivityId = "all";
+  closeModal(); render();
+  try { await db("UPDATE app_kids_activities__activities SET archived = 1 WHERE id = ?", [id]); }
+  catch (e) { activities = prev; showError(e.message); }
+}
+
+async function saveSession(fields, existingId) {
+  const now = nowIso();
+  if (existingId) {
+    const idx = sessions.findIndex((s) => s.id === existingId);
+    const prev = idx !== -1 ? sessions[idx] : null;
+    if (idx !== -1) sessions[idx] = { ...sessions[idx], ...fields };
+    closeModal(); render();
+    try {
+      await db("UPDATE app_kids_activities__sessions SET activity_id=?, kind=?, session_date=?, start_time=?, end_time=?, location=?, notes=? WHERE id=?",
+        [fields.activity_id, fields.kind, fields.session_date, fields.start_time, fields.end_time, fields.location, fields.notes, existingId]);
+    } catch (e) { if (idx !== -1 && prev) sessions[idx] = prev; showError(e.message); }
+  } else {
+    const row = { id: crypto.randomUUID(), ...fields, created_by: me.id, created_at: now };
+    sessions = [...sessions, row];
+    closeModal(); render();
+    try {
+      await db("INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, location, notes, created_by, created_at) VALUES (?,?,?,?,?,?,?,?,?,?)",
+        [row.id, row.activity_id, row.kind, row.session_date, row.start_time, row.end_time, row.location, row.notes, row.created_by, now]);
+    } catch (e) { sessions = sessions.filter((s) => s.id !== row.id); showError(e.message); }
+  }
+}
+
+async function deleteSession(id) {
+  const ok = await hubConfirm({ message: "Delete this session?", confirmLabel: "Delete", destructive: true });
+  if (!ok) return;
+  const prev = sessions;
+  sessions = sessions.filter((s) => s.id !== id);
+  closeModal(); render();
+  try { await db("DELETE FROM app_kids_activities__sessions WHERE id = ?", [id]); }
+  catch (e) { sessions = prev; showError(e.message); }
+}
+
+async function addGear(activityId, name) {
+  const row = { id: crypto.randomUUID(), activity_id: activityId, name, sort_order: gear.filter((g) => g.activity_id === activityId).length, created_by: me.id, created_at: nowIso() };
+  gear = [...gear, row];
+  render();
+  try {
+    await db("INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?,?,?,?,?,?)",
+      [row.id, row.activity_id, row.name, row.sort_order, row.created_by, row.created_at]);
+  } catch (e) { gear = gear.filter((g) => g.id !== row.id); showError(e.message); }
+}
+
+async function removeGear(id) {
+  const prev = gear;
+  gear = gear.filter((g) => g.id !== id);
+  render();
+  try { await db("DELETE FROM app_kids_activities__gear WHERE id = ?", [id]); }
+  catch (e) { gear = prev; showError(e.message); }
+}
+
+/* ── Rendering ─────────────────────────────────────────────────────────────── */
+function activityById(id) { return activities.find((a) => a.id === id); }
+
+function renderSession(s, showActivity) {
+  const kind = sessionKindMeta(s.kind);
+  const act = activityById(s.activity_id);
+  const where = s.location || act?.location || "";
+  return `
+    <div class="row">
+      <div class="row-icon" aria-hidden="true">${showActivity ? esc(act?.emoji ?? kind.icon) : kind.icon}</div>
+      <div class="row-body">
+        <div class="row-title">
+          ${showActivity && act ? `${esc(act.name)} — ` : ""}${esc(kind.label)}
+          ${s.kind === "game" ? `<span class="pill game">Game</span>` : ""}
+        </div>
+        <div class="row-meta">
+          ${esc(fmtTimeRange(s.start_time, s.end_time))}${where ? ` · ${esc(where)}` : ""}${s.notes ? ` · ${esc(s.notes)}` : ""}
+        </div>
+      </div>
+      <div class="row-side">
+        <span class="pill ${s._days === 0 ? "today" : s._days < 7 ? "week" : ""}">${esc(sessionDayLabel(s.session_date))}</span>
+        ${canManage() ? `<button class="edit-link" data-edit-session="${esc(s.id)}">Edit</button>` : ""}
+      </div>
+    </div>`;
+}
+
+function render() {
+  const root = document.getElementById("root");
+  root.className = "app-root";
+  const acts = sortedActivities(activities);
+
+  if (!acts.length) {
+    root.innerHTML = `
+      <div class="topbar"><h1>⚽ Kids' Activities</h1></div>
+      ${error ? `<div class="error">${esc(error)}</div>` : ""}
+      <div class="card empty">
+        No activities yet.${canManage() ? "" : " Ask an adult to set up the season."}
+        ${canManage() ? `<div style="margin-top:12px"><button class="btn" data-add-activity>+ Add an activity</button></div>` : ""}
+      </div>`;
+    return;
+  }
+
+  const filterIds = currentActivityId === "all" ? null : new Set([currentActivityId]);
+  const upcoming = upcomingSessions(sessions, new Date(), filterIds);
+  const current = currentActivityId === "all" ? null : activityById(currentActivityId);
+  const currentGear = current ? gear.filter((g) => g.activity_id === current.id) : [];
+
+  root.innerHTML = `
+    <div class="topbar">
+      <div>
+        <h1>⚽ Kids' Activities</h1>
+        <p class="muted tiny">Practices, games, and what to bring.</p>
+      </div>
+      ${canManage() ? `<button class="btn" data-add-session>+ Session</button>` : ""}
+    </div>
+    <div class="tabs">
+      <button class="tab ${currentActivityId === "all" ? "active" : ""}" data-tab="all">All</button>
+      ${acts.map((a) => `<button class="tab ${a.id === currentActivityId ? "active" : ""}" data-tab="${esc(a.id)}">${esc(a.emoji)} ${esc(a.name)}</button>`).join("")}
+      ${canManage() ? `<button class="tab" data-add-activity>+ Activity</button>` : ""}
+    </div>
+    ${error ? `<div class="error">${esc(error)}</div>` : ""}
+    ${current ? `
+      <div class="card" style="margin-bottom:12px">
+        <div class="row-title">${esc(current.emoji)} ${esc(current.name)} <span class="muted tiny">· ${esc(memberName(current.member_id))}${current.season ? ` · ${esc(current.season)}` : ""}</span></div>
+        <div class="row-meta">
+          ${current.location ? `📍 ${esc(current.location)} · ` : ""}
+          ${current.coach_name ? `${esc(current.coach_name)}${current.coach_contact ? ` (${esc(current.coach_contact)})` : ""}` : ""}
+        </div>
+        ${current.notes ? `<div class="row-meta">${esc(current.notes)}</div>` : ""}
+        <div class="section-head" style="margin:12px 0 6px"><h2>Gear checklist</h2></div>
+        <div class="gear-list">
+          ${currentGear.map((g) => `<span class="gear-chip">${esc(g.name)}${canManage() ? `<button data-remove-gear="${esc(g.id)}" title="Remove">✕</button>` : ""}</span>`).join("")}
+          ${!currentGear.length ? `<span class="muted tiny">Nothing listed yet.</span>` : ""}
+        </div>
+        ${canManage() ? `
+          <form class="inline-add" id="gear-form" style="margin-top:10px">
+            <input id="gear-name" placeholder="Add gear (shin guards, water bottle…)" />
+            <button type="submit" class="btn btn-ghost btn-sm">Add</button>
+          </form>` : ""}
+        ${canManage() ? `<div style="margin-top:10px"><button class="edit-link" data-edit-activity="${esc(current.id)}">Edit activity</button></div>` : ""}
+      </div>` : ""}
+    <div class="section-head"><h2>Coming up</h2></div>
+    ${upcoming.length
+      ? `<div class="stack">${upcoming.map((s) => renderSession(s, currentActivityId === "all")).join("")}</div>`
+      : `<div class="card empty tiny">No upcoming sessions${canManage() ? " — add one with + Session" : ""}.</div>`}
+  `;
+
+  document.getElementById("gear-form")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const input = document.getElementById("gear-name");
+    const name = input.value.trim();
+    if (!name || !current) return;
+    input.value = "";
+    addGear(current.id, name).catch((err) => showError(err.message));
+  });
+}
+
+/* ── Modals ────────────────────────────────────────────────────────────────── */
+function openModal(html) {
+  closeModal();
+  modalEl = document.createElement("div");
+  modalEl.className = "overlay";
+  modalEl.innerHTML = `<div class="modal">${html}</div>`;
+  modalEl.addEventListener("click", (e) => { if (e.target === modalEl) closeModal(); });
+  document.body.appendChild(modalEl);
+}
+function closeModal() { modalEl?.remove(); modalEl = null; }
+
+function submitBtnBusy() {
+  const btn = modalEl?.querySelector('button[type="submit"]');
+  if (btn) { btn.disabled = true; btn.textContent = "Saving…"; }
+}
+
+function openActivityEditor(existing) {
+  const a = existing ?? null;
+  const kidOptions = members.map((m) => `<option value="${esc(m.id)}" ${a?.member_id === m.id ? "selected" : ""}>${esc(m.name)}</option>`).join("");
+  openModal(`
+    <h2>${a ? "Edit activity" : "Add activity"}</h2>
+    <form class="form" id="activity-form">
+      <div class="grid2">
+        <div class="field"><label for="a-name">Activity</label><input id="a-name" data-autofocus value="${esc(a?.name ?? "")}" placeholder="U10 Soccer" required /></div>
+        <div class="field"><label for="a-kid">Whose</label><select id="a-kid">${kidOptions}</select></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="a-emoji">Emoji</label><input id="a-emoji" value="${esc(a?.emoji ?? "⚽")}" maxlength="4" /></div>
+        <div class="field"><label for="a-season">Season</label><input id="a-season" value="${esc(a?.season ?? "")}" placeholder="Fall 2026" /></div>
+      </div>
+      <div class="field"><label for="a-location">Usual location</label><input id="a-location" value="${esc(a?.location ?? "")}" placeholder="Miller Park" /></div>
+      <div class="grid2">
+        <div class="field"><label for="a-coach">Coach / teacher</label><input id="a-coach" value="${esc(a?.coach_name ?? "")}" /></div>
+        <div class="field"><label for="a-contact">Contact</label><input id="a-contact" value="${esc(a?.coach_contact ?? "")}" placeholder="phone or email" /></div>
+      </div>
+      <div class="field"><label for="a-notes">Notes</label><textarea id="a-notes">${esc(a?.notes ?? "")}</textarea></div>
+      <div class="modal-actions">
+        ${a ? `<button type="button" class="btn btn-danger modal-left" data-archive-activity="${esc(a.id)}">Archive</button>` : ""}
+        <button type="button" class="btn btn-ghost" data-cancel>Cancel</button>
+        <button type="submit" class="btn">${a ? "Save" : "Add"}</button>
+      </div>
+    </form>`);
+  modalEl.querySelector("[data-autofocus]")?.focus();
+  modalEl.querySelector("#activity-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = document.getElementById("a-name").value.trim();
+    if (!name) { document.getElementById("a-name").focus(); return; }
+    submitBtnBusy();
+    saveActivity({
+      member_id: document.getElementById("a-kid").value,
+      name,
+      season: document.getElementById("a-season").value.trim(),
+      location: document.getElementById("a-location").value.trim(),
+      coach_name: document.getElementById("a-coach").value.trim(),
+      coach_contact: document.getElementById("a-contact").value.trim(),
+      notes: document.getElementById("a-notes").value.trim(),
+      emoji: document.getElementById("a-emoji").value.trim() || "⚽",
+    }, a?.id ?? null).catch((err) => showError(err.message));
+  });
+}
+
+function openSessionEditor(existing) {
+  const s = existing ?? null;
+  const acts = sortedActivities(activities);
+  const defaultActivity = s?.activity_id ?? (currentActivityId !== "all" ? currentActivityId : acts[0]?.id);
+  const actOptions = acts.map((a) => `<option value="${esc(a.id)}" ${defaultActivity === a.id ? "selected" : ""}>${esc(a.emoji)} ${esc(a.name)}</option>`).join("");
+  const kindOptions = SESSION_KINDS.map((k) => `<option value="${k.value}" ${(s?.kind ?? "practice") === k.value ? "selected" : ""}>${k.icon} ${k.label}</option>`).join("");
+  openModal(`
+    <h2>${s ? "Edit session" : "Add session"}</h2>
+    <form class="form" id="session-form">
+      <div class="grid2">
+        <div class="field"><label for="s-activity">Activity</label><select id="s-activity">${actOptions}</select></div>
+        <div class="field"><label for="s-kind">Type</label><select id="s-kind">${kindOptions}</select></div>
+      </div>
+      <div class="field"><label for="s-date">Date</label><input id="s-date" type="date" value="${esc(s?.session_date ?? "")}" required /></div>
+      <div class="grid2">
+        <div class="field"><label for="s-start">Starts</label><input id="s-start" type="time" value="${esc(s?.start_time ?? "")}" /></div>
+        <div class="field"><label for="s-end">Ends</label><input id="s-end" type="time" value="${esc(s?.end_time ?? "")}" /></div>
+      </div>
+      <div class="field"><label for="s-location">Location <span class="muted" style="text-transform:none">(blank = usual)</span></label><input id="s-location" value="${esc(s?.location ?? "")}" /></div>
+      <div class="field"><label for="s-notes">Notes</label><textarea id="s-notes">${esc(s?.notes ?? "")}</textarea></div>
+      <div class="modal-actions">
+        ${s ? `<button type="button" class="btn btn-danger modal-left" data-delete-session="${esc(s.id)}">Delete</button>` : ""}
+        <button type="button" class="btn btn-ghost" data-cancel>Cancel</button>
+        <button type="submit" class="btn">${s ? "Save" : "Add"}</button>
+      </div>
+    </form>`);
+  modalEl.querySelector("#session-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const date = document.getElementById("s-date").value;
+    if (!date) { document.getElementById("s-date").focus(); return; }
+    const start = document.getElementById("s-start").value;
+    const end = document.getElementById("s-end").value;
+    if (start && end && end < start) { showError("End time is before start time."); return; }
+    submitBtnBusy();
+    saveSession({
+      activity_id: document.getElementById("s-activity").value,
+      kind: document.getElementById("s-kind").value,
+      session_date: date,
+      start_time: start,
+      end_time: end,
+      location: document.getElementById("s-location").value.trim(),
+      notes: document.getElementById("s-notes").value.trim(),
+    }, s?.id ?? null).catch((err) => showError(err.message));
+  });
+}
+
+/* ── Events ────────────────────────────────────────────────────────────────── */
+document.addEventListener("click", (e) => {
+  const t = e.target.closest("button");
+  if (!t) return;
+  if (t.hasAttribute("data-tab")) { currentActivityId = t.getAttribute("data-tab"); render(); return; }
+  if (t.hasAttribute("data-cancel")) { closeModal(); return; }
+  if (t.hasAttribute("data-add-activity")) { openActivityEditor(null); return; }
+  if (t.hasAttribute("data-edit-activity")) { openActivityEditor(activities.find((a) => a.id === t.getAttribute("data-edit-activity"))); return; }
+  if (t.hasAttribute("data-archive-activity")) { archiveActivity(t.getAttribute("data-archive-activity")); return; }
+  if (t.hasAttribute("data-add-session")) { openSessionEditor(null); return; }
+  if (t.hasAttribute("data-edit-session")) { openSessionEditor(sessions.find((s) => s.id === t.getAttribute("data-edit-session"))); return; }
+  if (t.hasAttribute("data-delete-session")) { deleteSession(t.getAttribute("data-delete-session")); return; }
+  if (t.hasAttribute("data-remove-gear")) { removeGear(t.getAttribute("data-remove-gear")).catch((err) => showError(err.message)); return; }
+});
+
+refresh();
+</script>
+</body>
+</html>

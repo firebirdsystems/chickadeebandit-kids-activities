@@ -1,0 +1,41 @@
+{
+  "id": "kids-activities",
+  "name": "Kids' Activities",
+  "version": "1.0.0",
+  "description": "Every kid's season in one place — practices, games, and rehearsals with times and locations, coach contacts, and the gear checklist so nothing gets left behind.",
+  "entrypoint": "index.html",
+  "runtime": "static",
+  "category": "family",
+  "tags": ["kids", "sports", "activities", "schedule", "practices", "season"],
+  "icon": "⚽",
+  "data_access": {
+    "reads": ["family.members"],
+    "writes": []
+  },
+  "permissions": {
+    "default_audience": "everyone",
+    "requires_approval": false
+  },
+  "storage": "db",
+  "db_plaintext_columns": ["kind", "session_date", "start_time"],
+  "row_policies": {
+    "activities": {
+      "kind": "adult_writable"
+    },
+    "sessions": {
+      "kind": "adult_writable"
+    },
+    "gear": {
+      "kind": "adult_writable"
+    }
+  },
+  "nav": { "label": "Activities" },
+  "resource_limits": {
+    "max_db_bytes": 52428800
+  },
+  "ai_access": {
+    "allowed": true,
+    "mode": "read",
+    "db_exports": ["activities", "upcoming_sessions"]
+  }
+}
