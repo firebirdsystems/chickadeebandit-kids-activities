@@ -1,7 +1,7 @@
 {
   "id": "kids-activities",
   "name": "Kids' Activities",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Every kid's season in one place — practices, games, and rehearsals with times and locations, coach contacts, and the gear checklist so nothing gets left behind.",
   "entrypoint": "index.html",
   "runtime": "static",
@@ -27,6 +27,14 @@
     },
     "gear": {
       "kind": "adult_writable"
+    }
+  },
+  "agenda": {
+    "kind": "event",
+    "label": "Activities",
+    "source": {
+      "kind": "sql",
+      "query": "SELECT s.id AS id, a.name AS title, COALESCE(NULLIF(s.location, ''), a.location) AS subtitle, COALESCE(NULLIF(s.start_time, ''), s.session_date) AS when_at, a.member_id AS member_id FROM app_kids_activities__sessions s JOIN app_kids_activities__activities a ON a.id = s.activity_id AND a.archived = 0 WHERE s.session_date = :today ORDER BY s.start_time LIMIT 20"
     }
   },
   "nav": { "label": "Activities" },
