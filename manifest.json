@@ -1,5 +1,6 @@
 {
   "id": "kids-activities",
+  "contexts": ["household", "shared_space"],
   "name": "Kids' Activities",
   "version": "1.1.0",
   "description": "Every kid's season in one place — practices, games, and rehearsals with times and locations, coach contacts, and the gear checklist so nothing gets left behind.",
