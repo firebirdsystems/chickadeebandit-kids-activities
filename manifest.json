@@ -19,12 +19,47 @@
   },
   "storage": "db",
   "db_plaintext_columns": ["kind", "session_date", "start_time"],
+    "member_references": {
+      "activities": [
+        {
+          "column": "member_id",
+          "on_removed": "delete",
+          "dependent_tables": [
+            {
+              "table": "sessions",
+              "foreign_key": "activity_id"
+            },
+            {
+              "table": "gear",
+              "foreign_key": "activity_id"
+            }
+          ]
+        },
+        {
+          "column": "created_by",
+          "on_removed": "keep"
+        }
+      ],
+      "sessions": {
+        "column": "created_by",
+        "on_removed": "keep"
+      },
+      "gear": {
+        "column": "created_by",
+        "on_removed": "keep"
+      }
+    },
   "row_policies": {
     "activities": {
       "kind": "adult_writable"
     },
     "sessions": {
-      "kind": "adult_writable"
+      "kind": "adult_writable",
+      "retain_days": {
+        "default": 730,
+        "timestamp_column": "session_date",
+        "override_key": "session_history"
+      }
     },
     "gear": {
       "kind": "adult_writable"
