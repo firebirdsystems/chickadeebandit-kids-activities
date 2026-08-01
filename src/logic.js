@@ -98,3 +98,13 @@ export function sortedActivities(activities) {
     .filter((a) => !Number(a.archived))
     .sort((a, b) => String(a.name).localeCompare(String(b.name)));
 }
+
+/**
+ * Fields the in-app search matches against (see hub-sdk `searchMatch`).
+ * Coach, location and season all count — an activity is looked up as
+ * "who is Mia's Tuesday coach" or "what's at the leisure centre", not
+ * by the activity's own name.
+ */
+export function searchableFields(item) {
+  return [item.name, item.season, item.location, item.coach_name, item.coach_contact, item.notes];
+}

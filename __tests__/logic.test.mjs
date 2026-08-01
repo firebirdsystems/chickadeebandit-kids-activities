@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   sessionKindMeta, daysUntilDate, upcomingSessions, pastSessions,
-  sessionDayLabel, fmtTime, fmtTimeRange, sortedActivities, isoDay,
+  sessionDayLabel, fmtTime, fmtTimeRange, sortedActivities, isoDay, searchableFields,
 } from "../src/logic.js";
 
 const FROM = new Date(2026, 6, 12, 9, 0, 0); // Sunday July 12, 2026 local
@@ -78,4 +78,15 @@ describe("isoDay", () => {
 
 describe("sessionKindMeta", () => {
   it("falls back to event", () => expect(sessionKindMeta("bogus").value).toBe("event"));
+});
+
+describe("searchableFields", () => {
+  it("matches on the coach and the venue, not just the activity name", () => {
+    const fields = searchableFields({
+      name: "Swimming", season: "spring", location: "Leisure centre",
+      coach_name: "Coach Ruiz", coach_contact: "07700 900123", notes: "bring goggles",
+    });
+    expect(fields).toContain("Coach Ruiz");
+    expect(fields).toContain("Leisure centre");
+  });
 });

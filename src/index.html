@@ -101,6 +101,13 @@
     .inline-add { display: flex; gap: 6px; }
     .inline-add input { flex: 1; }
     @media (max-width: 520px) { .grid2 { grid-template-columns: 1fr; } }
+    .search-row { margin-bottom: 12px; }
+    .search-input {
+      width: 100%; border: 1.5px solid var(--border-mid, var(--border, #d1d5db));
+      border-radius: 8px; padding: 9px 11px; font: inherit;
+      background: var(--surface, var(--card, #fff)); color: var(--text, inherit);
+    }
+    .search-input:focus { outline: none; border-color: var(--accent, #6366f1); }
   </style>
   <base href="/run/kids-activities/">
 </head>
@@ -110,10 +117,10 @@
 </div>
 
 <script type="module">
-import { esc, isAdult, hubConfirm } from "/hub-sdk.js";
+import { esc, isAdult, hubConfirm, searchMatch } from "/hub-sdk.js";
 import {
   SESSION_KINDS, sessionKindMeta, upcomingSessions, pastSessions,
-  sessionDayLabel, fmtTimeRange, sortedActivities, isoDay,
+  sessionDayLabel, fmtTimeRange, sortedActivities, isoDay, searchableFields,
 } from "./logic.js";
 
 const CONTEXT = window.__CONTEXT_URL ?? "";
@@ -127,6 +134,7 @@ let activities = [];
 let sessions = [];
 let gear = [];
 let currentActivityId = "all";
+let searchQ = "";       // in-app search (see logic.js searchableFields)
 let error = "";
 let modalEl = null;
 
@@ -319,6 +327,16 @@ function renderSession(s, showActivity) {
     </div>`;
 }
 
+// The whole shell is rendered at once, so re-render and put the caret back.
+document.addEventListener("input", (e) => {
+  if (e.target.id !== "search") return;
+  searchQ = e.target.value;
+  const caret = e.target.selectionStart;
+  render();
+  const next = document.getElementById("search");
+  if (next) { next.focus(); next.setSelectionRange(caret, caret); }
+});
+
 function render() {
   const root = document.getElementById("root");
   root.className = "app-root";
@@ -335,7 +353,12 @@ function render() {
     return;
   }
 
-  const filterIds = currentActivityId === "all" ? null : new Set([currentActivityId]);
+  // A search narrows which activities' sessions are in view; with no search it
+  // stays on the selected tab exactly as before.
+  const matched = searchQ ? acts.filter((a) => searchMatch(searchQ, searchableFields(a))) : acts;
+  const filterIds = searchQ
+    ? new Set(matched.map((a) => a.id))
+    : (currentActivityId === "all" ? null : new Set([currentActivityId]));
   const upcoming = upcomingSessions(sessions, new Date(), filterIds);
   const current = currentActivityId === "all" ? null : activityById(currentActivityId);
   const currentGear = current ? gear.filter((g) => g.activity_id === current.id) : [];
@@ -354,7 +377,8 @@ function render() {
       ${canManage() ? `<button class="tab" data-add-activity>+ Activity</button>` : ""}
     </div>
     ${error ? `<div class="error">${esc(error)}</div>` : ""}
-    ${current ? `
+    ${acts.length ? `<div class="search-row"><input id="search" class="search-input" type="search" placeholder="Search activities…" aria-label="Search activities" value="${esc(searchQ)}" /></div>` : ""}
+    ${current && !searchQ ? `
       <div class="card" style="margin-bottom:12px">
         <div class="row-title">${esc(current.emoji)} ${esc(current.name)} <span class="muted tiny">· ${esc(memberName(current.member_id))}${current.season ? ` · ${esc(current.season)}` : ""}</span></div>
         <div class="row-meta">
@@ -377,7 +401,7 @@ function render() {
     <div class="section-head"><h2>Coming up</h2></div>
     ${upcoming.length
       ? `<div class="stack">${upcoming.map((s) => renderSession(s, currentActivityId === "all")).join("")}</div>`
-      : `<div class="card empty tiny">No upcoming sessions${canManage() ? " — add one with + Session" : ""}.</div>`}
+      : `<div class="card empty tiny">${searchQ ? `No sessions for activities matching "${esc(searchQ)}".` : `No upcoming sessions${canManage() ? " — add one with + Session" : ""}.`}</div>`}
   `;
 
   document.getElementById("gear-form")?.addEventListener("submit", (e) => {
