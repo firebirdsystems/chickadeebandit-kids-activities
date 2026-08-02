@@ -126,6 +126,20 @@ import {
 const CONTEXT = window.__CONTEXT_URL ?? "";
 const DB = window.__DB_URL ?? "";
 const HUB_MEMBER = window.__CURRENT_MEMBER ?? null;
+const EVENTS = window.__EVENTS_URL ?? "";
+
+async function publishEvent(type, subjectId, payload = {}) {
+  if (!EVENTS) return;
+  try {
+    await fetch(EVENTS, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type, subject_id: subjectId, payload }),
+    });
+  } catch {
+    // The row is already written; a failed publish is not fatal.
+  }
+}
 
 let members = [];
 let memberMap = new Map();
@@ -232,6 +246,13 @@ async function saveActivity(fields, existingId) {
     try {
       await db("INSERT INTO app_kids_activities__activities (id, member_id, name, season, location, coach_name, coach_contact, notes, emoji, archived, created_by, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,0,?,?,?)",
         [row.id, row.member_id, row.name, row.season, row.location, row.coach_name, row.coach_contact, row.notes, row.emoji, row.created_by, now, now]);
+      // The SEASON is the event, not the sessions: adding a practice is
+      // routine schedule upkeep and a season's worth of them lands in one go.
+      await publishEvent("kids_activity.season_started", row.id, {
+        name: row.name,
+        season: row.season,
+        member_id: row.member_id,
+      });
     } catch (e) {
       activities = activities.filter((a) => a.id !== row.id);
       currentActivityId = "all";
