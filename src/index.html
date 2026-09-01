@@ -208,7 +208,7 @@ async function loadData() {
   const [a, s, g] = await Promise.all([
     db("SELECT id, member_id, name, season, location, coach_name, coach_contact, notes, emoji, archived, created_by, created_at, updated_at FROM app_kids_activities__activities WHERE archived = 0 ORDER BY created_at"),
     db("SELECT id, activity_id, kind, session_date, start_time, end_time, location, notes, created_by, created_at FROM app_kids_activities__sessions ORDER BY session_date, start_time LIMIT 600"),
-    db("SELECT id, activity_id, name, sort_order, created_by, created_at FROM app_kids_activities__gear ORDER BY sort_order, created_at"),
+    db("SELECT g.id, g.activity_id, g.name, g.sort_order, g.created_by, g.created_at FROM app_kids_activities__gear g JOIN app_kids_activities__activities a ON a.id = g.activity_id AND a.archived = 0 ORDER BY g.sort_order, g.created_at"),
   ]);
   activities = a.rows ?? [];
   sessions = s.rows ?? [];
