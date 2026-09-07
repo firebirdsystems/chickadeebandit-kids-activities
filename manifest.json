@@ -78,6 +78,11 @@
       "query": "SELECT s.id AS id, a.name AS title, COALESCE(NULLIF(s.location, ''), a.location) AS subtitle, COALESCE(NULLIF(s.start_time, ''), s.session_date) AS when_at, a.member_id AS member_id FROM app_kids_activities__sessions s JOIN app_kids_activities__activities a ON a.id = s.activity_id AND a.archived = 0 WHERE s.session_date = :today ORDER BY s.start_time LIMIT 20"
     }
   },
+  "store_acls": {
+    "calendar_events": {
+      "write": { "require_role": "adult" }
+    }
+  },
   "glance": {
     "source": {
       "kind": "sql",
@@ -86,6 +91,7 @@
     "display": { "template": "list", "title": "title", "subtitle": "subtitle" }
   },
   "publishes": ["kids_activity.season_started"],
+  "exports": ["calendar_events"],
   "publish_acls": {
     "kids_activity.season_started": { "require_role": "adult" }
   },

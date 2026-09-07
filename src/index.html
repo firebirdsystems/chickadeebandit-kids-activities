@@ -119,14 +119,16 @@
 <script type="module">
 import { esc, isAdult, hubConfirm, searchMatch } from "/hub-sdk.js";
 import {
-  SESSION_KINDS, sessionKindMeta, upcomingSessions, pastSessions,
+  SESSION_KINDS, sessionKindMeta, upcomingSessions,
   sessionDayLabel, fmtTimeRange, sortedActivities, isoDay, searchableFields,
+  buildCalendarEvents,
 } from "./logic.js";
 
 const CONTEXT = window.__CONTEXT_URL ?? "";
 const DB = window.__DB_URL ?? "";
 const HUB_MEMBER = window.__CURRENT_MEMBER ?? null;
 const EVENTS = window.__EVENTS_URL ?? "";
+const STORE_URL = window.__STORE_URL ?? "";
 
 async function publishEvent(type, subjectId, payload = {}) {
   if (!EVENTS) return;
@@ -226,6 +228,22 @@ async function refresh() {
 
 function showError(msg) { error = msg; render(); }
 
+/**
+ * Republish the `calendar_events` export so the season shows up on the
+ * household calendar and in the ICS feed. Best-effort and never awaited by a
+ * caller's error path: a failed sync must not roll back a session the user
+ * just saved, and the next mutation republishes the whole payload anyway.
+ */
+async function syncCalendar() {
+  if (!STORE_URL || !DB) return;
+  const events = buildCalendarEvents(activities, sessions, isoDay(new Date()));
+  await fetch(STORE_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ key: "calendar_events", value: JSON.stringify(events) }),
+  }).catch(() => {});
+}
+
 /* ── Mutations ─────────────────────────────────────────────────────────────── */
 async function saveActivity(fields, existingId) {
   const now = nowIso();
@@ -237,6 +255,7 @@ async function saveActivity(fields, existingId) {
     try {
       await db("UPDATE app_kids_activities__activities SET member_id=?, name=?, season=?, location=?, coach_name=?, coach_contact=?, notes=?, emoji=?, updated_at=? WHERE id=?",
         [fields.member_id, fields.name, fields.season, fields.location, fields.coach_name, fields.coach_contact, fields.notes, fields.emoji, now, existingId]);
+      syncCalendar();
     } catch (e) { if (idx !== -1 && prev) activities[idx] = prev; showError(e.message); }
   } else {
     const row = { id: crypto.randomUUID(), ...fields, archived: 0, created_by: me.id, created_at: now, updated_at: now };
@@ -253,6 +272,7 @@ async function saveActivity(fields, existingId) {
         season: row.season,
         member_id: row.member_id,
       });
+      syncCalendar();
     } catch (e) {
       activities = activities.filter((a) => a.id !== row.id);
       currentActivityId = "all";
@@ -268,8 +288,10 @@ async function archiveActivity(id) {
   activities = activities.filter((a) => a.id !== id);
   if (currentActivityId === id) currentActivityId = "all";
   closeModal(); render();
-  try { await db("UPDATE app_kids_activities__activities SET archived = 1 WHERE id = ?", [id]); }
-  catch (e) { activities = prev; showError(e.message); }
+  try {
+    await db("UPDATE app_kids_activities__activities SET archived = 1 WHERE id = ?", [id]);
+    syncCalendar();
+  } catch (e) { activities = prev; showError(e.message); }
 }
 
 async function saveSession(fields, existingId) {
@@ -282,6 +304,7 @@ async function saveSession(fields, existingId) {
     try {
       await db("UPDATE app_kids_activities__sessions SET activity_id=?, kind=?, session_date=?, start_time=?, end_time=?, location=?, notes=? WHERE id=?",
         [fields.activity_id, fields.kind, fields.session_date, fields.start_time, fields.end_time, fields.location, fields.notes, existingId]);
+      syncCalendar();
     } catch (e) { if (idx !== -1 && prev) sessions[idx] = prev; showError(e.message); }
   } else {
     const row = { id: crypto.randomUUID(), ...fields, created_by: me.id, created_at: now };
@@ -290,6 +313,7 @@ async function saveSession(fields, existingId) {
     try {
       await db("INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, location, notes, created_by, created_at) VALUES (?,?,?,?,?,?,?,?,?,?)",
         [row.id, row.activity_id, row.kind, row.session_date, row.start_time, row.end_time, row.location, row.notes, row.created_by, now]);
+      syncCalendar();
     } catch (e) { sessions = sessions.filter((s) => s.id !== row.id); showError(e.message); }
   }
 }
@@ -300,8 +324,10 @@ async function deleteSession(id) {
   const prev = sessions;
   sessions = sessions.filter((s) => s.id !== id);
   closeModal(); render();
-  try { await db("DELETE FROM app_kids_activities__sessions WHERE id = ?", [id]); }
-  catch (e) { sessions = prev; showError(e.message); }
+  try {
+    await db("DELETE FROM app_kids_activities__sessions WHERE id = ?", [id]);
+    syncCalendar();
+  } catch (e) { sessions = prev; showError(e.message); }
 }
 
 async function addGear(activityId, name) {

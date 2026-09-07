@@ -32,6 +32,21 @@ describe("manifest.json", () => {
     }
   });
 
+  it("publishes sessions to the household calendar", () => {
+    // The hub only aggregates an app's calendar_events export when the
+    // manifest lists it (collectCrossAppEvents filters on manifest.exports),
+    // so dropping this key silently empties the season off the calendar.
+    expect(manifest.exports).toContain("calendar_events");
+  });
+
+  it("gates the calendar export behind an adult", () => {
+    // Without this ACL any member, including a kid, could POST straight to the
+    // store key and rewrite what the household calendar and the ICS feed show.
+    // The sessions table is adult_writable, so the app's own sync path is
+    // already adult-only — this closes the direct-POST path behind it.
+    expect(manifest.store_acls?.calendar_events?.write?.require_role).toBe("adult");
+  });
+
   it("ai exports match the query files", () => {
     expect(manifest.ai_access?.db_exports?.sort()).toEqual(["activities", "upcoming_sessions"]);
   });
