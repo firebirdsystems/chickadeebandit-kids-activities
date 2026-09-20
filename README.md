@@ -1,5 +1,7 @@
 # Kids' Activities
 
+A [Chickadee Bandit](https://chickadeebandit.com/app-library/kids-activities) app.
+
 Every kid's season in one place — practices, games, and rehearsals with times
 and locations, coach contacts, and the per-activity gear checklist.
 
