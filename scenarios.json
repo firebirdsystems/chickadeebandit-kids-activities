@@ -1,0 +1,119 @@
+{
+  "scenarios": [
+    {
+      "name": "adults manage activities, sessions and gear; a child can read their schedule but not change it",
+      "members": { "parent": "adult", "kid": "child" },
+      "steps": [
+        {
+          "action": "db",
+          "as": "parent",
+          "sql": "INSERT INTO app_kids_activities__activities (id, member_id, name, season, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+          "params": ["a1", "{{kid}}", "U10 Soccer", "Fall 2026", "{{parent}}", "2026-01-01T00:00:00Z", "2026-01-01T00:00:00Z"],
+          "expect": { "status": 200 }
+        },
+        {
+          "action": "db",
+          "as": "parent",
+          "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+          "params": ["s1", "a1", "practice", "2026-01-10", "17:30", "{{parent}}", "2026-01-01T00:00:00Z"],
+          "expect": { "status": 200 }
+        },
+        {
+          "action": "db",
+          "as": "parent",
+          "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, created_by, created_at) VALUES (?, ?, ?, ?, ?)",
+          "params": ["g1", "a1", "Shin guards", "{{parent}}", "2026-01-01T00:00:00Z"],
+          "expect": { "status": 200 }
+        },
+        {
+          "action": "db",
+          "as": "kid",
+          "sql": "INSERT INTO app_kids_activities__activities (id, member_id, name, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
+          "params": ["a2", "{{kid}}", "Video games club", "{{kid}}", "2026-01-01T00:00:00Z", "2026-01-01T00:00:00Z"],
+          "expect": { "status": 403 }
+        },
+        {
+          "action": "db",
+          "as": "kid",
+          "sql": "DELETE FROM app_kids_activities__sessions WHERE id = 's1'",
+          "expect": { "status": 403 }
+        },
+        {
+          "action": "db",
+          "as": "kid",
+          "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, created_by, created_at) VALUES (?, ?, ?, ?, ?)",
+          "params": ["g2", "a1", "Candy", "{{kid}}", "2026-01-01T00:00:00Z"],
+          "expect": { "status": 403 }
+        },
+        {
+          "action": "db",
+          "as": "kid",
+          "sql": "SELECT id, session_date, start_time FROM app_kids_activities__sessions",
+          "expect": { "status": 200, "rowCount": 1, "rowsContain": [{ "id": "s1", "session_date": "2026-01-10", "start_time": "17:30" }] }
+        },
+        {
+          "action": "db",
+          "as": "kid",
+          "sql": "SELECT id, name FROM app_kids_activities__activities",
+          "expect": { "status": 200, "rowCount": 1, "rowsContain": [{ "id": "a1", "name": "U10 Soccer" }] }
+        },
+        {
+          "action": "db",
+          "as": "kid",
+          "sql": "SELECT id FROM app_kids_activities__gear",
+          "expect": { "status": 200, "rowCount": 1 }
+        }
+      ]
+    },
+    {
+      "name": "the AI exports list only active activities and the schedule in date/time order",
+      "members": { "parent": "adult" },
+      "steps": [
+        {
+          "action": "seedRaw",
+          "sql": "INSERT INTO app_kids_activities__activities (id, member_id, name, archived, created_by, created_at, updated_at) VALUES ('a_live', 'k1', 'Piano', 0, 'p', '2026-01-01T00:00:00Z', '2026-01-01T00:00:00Z'), ('a_old', 'k1', 'Old swim', 1, 'p', '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')"
+        },
+        {
+          "action": "seedRaw",
+          "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, created_by, created_at) VALUES ('s_late', 'a_live', 'rehearsal', '2026-02-01', '18:00', 'p', '2026-01-01T00:00:00Z'), ('s_early', 'a_live', 'event', '2026-01-15', '09:00', 'p', '2026-01-01T00:00:00Z')"
+        },
+        {
+          "action": "named",
+          "as": "parent",
+          "kind": "query",
+          "name": "activities",
+          "expect": { "status": 200, "rowCount": 1, "rowsContain": [{ "id": "a_live", "name": "Piano" }] }
+        },
+        {
+          "action": "named",
+          "as": "parent",
+          "kind": "query",
+          "name": "upcoming_sessions",
+          "expect": { "status": 200, "rowCount": 2, "rowsContain": [{ "id": "s_early", "kind": "event" }, { "id": "s_late", "session_date": "2026-02-01" }] }
+        }
+      ]
+    },
+    {
+      "name": "only an adult may announce a season start",
+      "members": { "parent": "adult", "kid": "child" },
+      "steps": [
+        {
+          "action": "publish",
+          "as": "kid",
+          "type": "kids_activity.season_started",
+          "subject_id": "a1",
+          "payload": { "name": "U10 Soccer" },
+          "expect": { "status": 403 }
+        },
+        {
+          "action": "publish",
+          "as": "parent",
+          "type": "kids_activity.season_started",
+          "subject_id": "a1",
+          "payload": { "name": "U10 Soccer" },
+          "expect": { "status": 201 }
+        }
+      ]
+    }
+  ]
+}
