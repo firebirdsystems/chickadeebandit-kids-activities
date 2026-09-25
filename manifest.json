@@ -70,6 +70,36 @@
       "kind": "adult_writable"
     }
   },
+  "shareable": {
+    "activity": {
+      "table": "activities",
+      "title_column": "name",
+      "columns": [
+        { "column": "season", "label": "Season" },
+        { "column": "location", "label": "Usual location" }
+      ],
+      "aggregates": [
+        { "label": "Gear to bring", "table": "gear", "fk_column": "activity_id", "op": "list", "value_column": "name" }
+      ],
+      "feed": {
+        "label": "Schedule",
+        "table": "sessions",
+        "fk_column": "activity_id",
+        "columns": [
+          { "column": "kind", "label": "What", "role": "heading",
+            "value_labels": { "practice": "Practice", "game": "Game", "rehearsal": "Rehearsal", "event": "Event" } },
+          { "column": "session_date", "label": "Date", "format": "date", "role": "detail" },
+          { "column": "start_time", "label": "Starts", "role": "detail" },
+          { "column": "end_time", "label": "Ends", "role": "detail" },
+          { "column": "location", "label": "Where", "role": "detail" }
+        ],
+        "order_column": "session_date",
+        "order": "newest",
+        "max_items": 200,
+        "empty_text": "Nothing is scheduled yet."
+      }
+    }
+  },
   "agenda": {
     "kind": "event",
     "label": "Activities",

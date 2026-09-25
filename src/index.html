@@ -117,18 +117,48 @@
 </div>
 
 <script type="module">
-import { esc, isAdult, hubConfirm, searchMatch } from "/hub-sdk.js";
+import {
+  esc, isAdult, hubConfirm, searchMatch,
+  createShareHelper, activeShareLinks, SHARE_EXPIRY_CHOICES, DEFAULT_SHARE_EXPIRY_HOURS,
+} from "/hub-sdk.js";
 import {
   SESSION_KINDS, sessionKindMeta, upcomingSessions,
   sessionDayLabel, fmtTimeRange, sortedActivities, isoDay, searchableFields,
   buildCalendarEvents,
 } from "./logic.js";
+import { createShareUi, createOverlayView } from "./share.js";
 
 const CONTEXT = window.__CONTEXT_URL ?? "";
 const DB = window.__DB_URL ?? "";
 const HUB_MEMBER = window.__CURRENT_MEMBER ?? null;
 const EVENTS = window.__EVENTS_URL ?? "";
 const STORE_URL = window.__STORE_URL ?? "";
+const IS_ADMIN = window.__IS_ADMIN === true;
+
+// External share links (manifest.shareable.activity). The hub injects the URLs
+// only when the manifest declares `shareable`, and mints for adults only;
+// whether this household or space allows it at all is answered by the panel's
+// first read, which it reports rather than guessing here.
+const share = createShareHelper(window.__SHARE_CREATE_URL, window.__SHARE_REVOKE_URL, window.__SHARE_LIST_URL);
+const CAN_SHARE = share.enabled && !!HUB_MEMBER && isAdult(HUB_MEMBER);
+const shareView = createOverlayView(document);
+const shareUi = createShareUi({
+  share,
+  itemType: "activity",
+  noun: "activity",
+  scopeHtml: () => "The page shows the activity’s name, season and usual location, the gear list, and every session with its date, time and place, latest date first. Which child it’s for, the coach’s details and your notes stay in the household. Anyone who gets the link can read it.",
+  esc,
+  confirm: (message, opts) => hubConfirm({ message, ...opts, destructive: true }),
+  writeText: (text) => navigator.clipboard.writeText(text),
+  activeLinks: activeShareLinks,
+  expiryChoices: SHARE_EXPIRY_CHOICES,
+  defaultExpiryHours: DEFAULT_SHARE_EXPIRY_HOURS,
+  getMe: () => HUB_MEMBER,
+  isAdmin: () => IS_ADMIN,
+  memberName: (id) => memberMap.get(id)?.name ?? "",
+  view: shareView,
+});
+shareView.bind(shareUi);
 
 async function publishEvent(type, subjectId, payload = {}) {
   if (!EVENTS) return;
@@ -443,7 +473,10 @@ function render() {
             <input id="gear-name" placeholder="Add gear (shin guards, water bottle…)" />
             <button type="submit" class="btn btn-ghost btn-sm">Add</button>
           </form>` : ""}
-        ${canManage() ? `<div style="margin-top:10px"><button class="edit-link" data-edit-activity="${esc(current.id)}">Edit activity</button></div>` : ""}
+        ${canManage() || CAN_SHARE ? `<div style="margin-top:10px">
+          ${canManage() ? `<button class="edit-link" data-edit-activity="${esc(current.id)}">Edit activity</button>` : ""}
+          ${CAN_SHARE ? `<button class="edit-link" data-share-activity="${esc(current.id)}" data-testid="activity-share">Share</button>` : ""}
+        </div>` : ""}
       </div>` : ""}
     <div class="section-head"><h2>Coming up</h2></div>
     ${upcoming.length
@@ -576,6 +609,11 @@ document.addEventListener("click", (e) => {
   if (t.hasAttribute("data-cancel")) { closeModal(); return; }
   if (t.hasAttribute("data-add-activity")) { openActivityEditor(null); return; }
   if (t.hasAttribute("data-edit-activity")) { openActivityEditor(activities.find((a) => a.id === t.getAttribute("data-edit-activity"))); return; }
+  if (t.hasAttribute("data-share-activity")) {
+    const a = activityById(t.getAttribute("data-share-activity"));
+    if (a) shareUi.open({ id: a.id, title: a.name });
+    return;
+  }
   if (t.hasAttribute("data-archive-activity")) { archiveActivity(t.getAttribute("data-archive-activity")); return; }
   if (t.hasAttribute("data-add-session")) { openSessionEditor(null); return; }
   if (t.hasAttribute("data-edit-session")) { openSessionEditor(sessions.find((s) => s.id === t.getAttribute("data-edit-session"))); return; }
