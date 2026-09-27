@@ -119,7 +119,7 @@
 <script type="module">
 import {
   esc, isAdult, hubConfirm, searchMatch,
-  createShareHelper, activeShareLinks, SHARE_EXPIRY_CHOICES, DEFAULT_SHARE_EXPIRY_HOURS,
+  createShareHelper, activeShareLinks, SHARE_CALENDAR_EXPIRY_CHOICES, DEFAULT_SHARE_EXPIRY_HOURS,
 } from "/hub-sdk.js";
 import {
   SESSION_KINDS, sessionKindMeta, upcomingSessions,
@@ -146,13 +146,16 @@ const shareUi = createShareUi({
   share,
   itemType: "activity",
   noun: "activity",
-  scopeHtml: () => "The page shows the activity’s name, season and usual location, the gear list, and every session with its date, time and place, latest date first. Which child it’s for, the coach’s details and your notes stay in the household. Anyone who gets the link can read it.",
+  scopeHtml: () => "The page shows the activity’s name, season and usual location, the gear list, and every session with its date, time and place, latest date first. The calendar link carries the same sessions, from a month ago onward. Which child it’s for, the coach’s details and your notes stay in the household. Anyone who gets the link can read it.",
   esc,
   confirm: (message, opts) => hubConfirm({ message, ...opts, destructive: true }),
   writeText: (text) => navigator.clipboard.writeText(text),
   activeLinks: activeShareLinks,
-  expiryChoices: SHARE_EXPIRY_CHOICES,
+  // A season outlasts a month, and a calendar subscription stops updating when
+  // its link expires, so this item type offers the longer choices.
+  expiryChoices: SHARE_CALENDAR_EXPIRY_CHOICES,
   defaultExpiryHours: DEFAULT_SHARE_EXPIRY_HOURS,
+  calendarUrl: (link) => share.calendarUrl(link),
   getMe: () => HUB_MEMBER,
   isAdmin: () => IS_ADMIN,
   memberName: (id) => memberMap.get(id)?.name ?? "",

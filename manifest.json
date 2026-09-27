@@ -23,7 +23,7 @@
     "sessions": {"sql": "SELECT id, activity_id, kind, session_date, start_time, end_time, location, notes, created_by, created_at FROM app_kids_activities__sessions ORDER BY session_date, start_time LIMIT 600"},
     "gear": {"sql": "SELECT g.id, g.activity_id, g.name, g.sort_order, g.created_by, g.created_at FROM app_kids_activities__gear g JOIN app_kids_activities__activities a ON a.id = g.activity_id AND a.archived = 0 ORDER BY g.sort_order, g.created_at"}
   },
-  "db_plaintext_columns": ["kind", "session_date", "start_time"],
+  "db_plaintext_columns": ["kind", "session_date", "start_time", "archived"],
     "member_references": {
       "activities": [
         {
@@ -74,6 +74,7 @@
     "activity": {
       "table": "activities",
       "title_column": "name",
+      "visible_where": { "column": "archived", "values": ["0"] },
       "columns": [
         { "column": "season", "label": "Season" },
         { "column": "location", "label": "Usual location" }
@@ -97,6 +98,21 @@
         "order": "newest",
         "max_items": 200,
         "empty_text": "Nothing is scheduled yet."
+      },
+      "calendar": {
+        "title_prefix_from_item": true,
+        "title_value_labels": { "practice": "Practice", "game": "Game", "rehearsal": "Rehearsal", "event": "Event" },
+        "item_location_column": "location",
+        "source": {
+          "kind": "rows",
+          "table": "sessions",
+          "fk_column": "activity_id",
+          "date_column": "session_date",
+          "start_time_column": "start_time",
+          "end_time_column": "end_time",
+          "title_column": "kind",
+          "location_column": "location"
+        }
       }
     }
   },
