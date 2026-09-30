@@ -389,7 +389,7 @@ function renderSession(s, showActivity) {
   const act = activityById(s.activity_id);
   const where = s.location || act?.location || "";
   return `
-    <div class="row">
+    <div class="row" data-testid="session-row" data-session-id="${esc(s.id)}">
       <div class="row-icon" aria-hidden="true">${showActivity ? esc(act?.emoji ?? kind.icon) : kind.icon}</div>
       <div class="row-body">
         <div class="row-title">
@@ -402,7 +402,7 @@ function renderSession(s, showActivity) {
       </div>
       <div class="row-side">
         <span class="pill ${s._days === 0 ? "today" : s._days < 7 ? "week" : ""}">${esc(sessionDayLabel(s.session_date))}</span>
-        ${canManage() ? `<button class="edit-link" data-edit-session="${esc(s.id)}">Edit</button>` : ""}
+        ${canManage() ? `<button class="edit-link" data-edit-session="${esc(s.id)}" data-testid="session-edit" data-session-id="${esc(s.id)}">Edit</button>` : ""}
       </div>
     </div>`;
 }
@@ -449,17 +449,17 @@ function render() {
         <h1>⚽ Kids' Activities</h1>
         <p class="muted tiny">Practices, games, and what to bring.</p>
       </div>
-      ${canManage() ? `<button class="btn" data-add-session>+ Session</button>` : ""}
+      ${canManage() ? `<button class="btn" data-add-session data-testid="add-session">+ Session</button>` : ""}
     </div>
     <div class="tabs">
       <button class="tab ${currentActivityId === "all" ? "active" : ""}" data-tab="all">All</button>
-      ${acts.map((a) => `<button class="tab ${a.id === currentActivityId ? "active" : ""}" data-tab="${esc(a.id)}">${esc(a.emoji)} ${esc(a.name)}</button>`).join("")}
+      ${acts.map((a) => `<button class="tab ${a.id === currentActivityId ? "active" : ""}" data-tab="${esc(a.id)}" data-testid="activity-tab" data-activity-id="${esc(a.id)}">${esc(a.emoji)} ${esc(a.name)}</button>`).join("")}
       ${canManage() ? `<button class="tab" data-add-activity>+ Activity</button>` : ""}
     </div>
     ${error ? `<div class="error">${esc(error)}</div>` : ""}
     ${acts.length ? `<div class="search-row"><input id="search" class="search-input" type="search" placeholder="Search activities…" aria-label="Search activities" value="${esc(searchQ)}" /></div>` : ""}
     ${current && !searchQ ? `
-      <div class="card" style="margin-bottom:12px">
+      <div class="card" style="margin-bottom:12px" data-testid="activity-detail" data-activity-id="${esc(current.id)}">
         <div class="row-title">${esc(current.emoji)} ${esc(current.name)} <span class="muted tiny">· ${esc(memberName(current.member_id))}${current.season ? ` · ${esc(current.season)}` : ""}</span></div>
         <div class="row-meta">
           ${current.location ? `📍 ${esc(current.location)} · ` : ""}
@@ -468,7 +468,7 @@ function render() {
         ${current.notes ? `<div class="row-meta">${esc(current.notes)}</div>` : ""}
         <div class="section-head" style="margin:12px 0 6px"><h2>Gear checklist</h2></div>
         <div class="gear-list">
-          ${currentGear.map((g) => `<span class="gear-chip">${esc(g.name)}${canManage() ? `<button data-remove-gear="${esc(g.id)}" title="Remove">✕</button>` : ""}</span>`).join("")}
+          ${currentGear.map((g) => `<span class="gear-chip" data-testid="gear-chip" data-gear-id="${esc(g.id)}">${esc(g.name)}${canManage() ? `<button data-remove-gear="${esc(g.id)}" title="Remove" data-testid="gear-remove" data-gear-id="${esc(g.id)}">✕</button>` : ""}</span>`).join("")}
           ${!currentGear.length ? `<span class="muted tiny">Nothing listed yet.</span>` : ""}
         </div>
         ${canManage() ? `

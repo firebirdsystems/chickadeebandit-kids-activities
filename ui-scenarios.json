@@ -1,0 +1,40 @@
+{
+  "scenarios": [
+    {
+      "name": "a child reads their activity's schedule and gear read-only; an adult gets the edit, remove and add controls",
+      "members": { "parent": "adult", "kid": "child" },
+      "steps": [
+        { "action": "seedRaw",
+          "sql": "INSERT INTO app_kids_activities__activities (id, member_id, name, season, location, emoji, archived, created_by, created_at, updated_at) VALUES ('ka-soccer', ?, ?, ?, ?, '⚽', 0, ?, '2026-08-01T09:00:00Z', '2026-08-01T09:00:00Z')",
+          "params": ["{{kid}}", "U10 Soccer", "Fall season", "Miller Park", "{{parent}}"] },
+        { "action": "seedRaw",
+          "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, created_by, created_at) VALUES ('ks-practice', 'ka-soccer', 'practice', date('now','+3 days'), '17:30', ?, '2026-08-01T09:00:00Z')",
+          "params": ["{{parent}}"] },
+        { "action": "seedRaw",
+          "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES ('kg-shin', 'ka-soccer', ?, 0, ?, '2026-08-01T09:00:00Z')",
+          "params": ["Shin guards", "{{parent}}"] },
+
+        { "action": "open", "as": "kid" },
+        { "action": "expectVisible", "as": "kid", "selector": "[data-testid=\"activity-tab\"][data-activity-id=\"ka-soccer\"]" },
+        { "action": "click", "as": "kid", "selector": "[data-testid=\"activity-tab\"][data-activity-id=\"ka-soccer\"]" },
+        { "action": "expectVisible", "as": "kid", "selector": "[data-testid=\"activity-detail\"][data-activity-id=\"ka-soccer\"]" },
+        { "action": "expectVisible", "as": "kid", "selector": "[data-testid=\"gear-chip\"][data-gear-id=\"kg-shin\"]" },
+        { "action": "expectVisible", "as": "kid", "selector": "[data-testid=\"session-row\"][data-session-id=\"ks-practice\"]" },
+        { "action": "expectText", "as": "kid", "text": "Shin guards", "selector": "[data-testid=\"gear-chip\"][data-gear-id=\"kg-shin\"]" },
+        { "action": "expectCount", "as": "kid", "selector": "[data-testid=\"gear-remove\"][data-gear-id=\"kg-shin\"]", "count": 0 },
+        { "action": "expectCount", "as": "kid", "selector": "[data-testid=\"session-edit\"][data-session-id=\"ks-practice\"]", "count": 0 },
+        { "action": "expectCount", "as": "kid", "selector": "[data-testid=\"add-session\"]", "count": 0 },
+
+        { "action": "open", "as": "parent" },
+        { "action": "expectVisible", "as": "parent", "selector": "[data-testid=\"activity-tab\"][data-activity-id=\"ka-soccer\"]" },
+        { "action": "click", "as": "parent", "selector": "[data-testid=\"activity-tab\"][data-activity-id=\"ka-soccer\"]" },
+        { "action": "expectVisible", "as": "parent", "selector": "[data-testid=\"activity-detail\"][data-activity-id=\"ka-soccer\"]" },
+        { "action": "expectVisible", "as": "parent", "selector": "[data-testid=\"gear-chip\"][data-gear-id=\"kg-shin\"]" },
+        { "action": "expectVisible", "as": "parent", "selector": "[data-testid=\"session-row\"][data-session-id=\"ks-practice\"]" },
+        { "action": "expectVisible", "as": "parent", "selector": "[data-testid=\"gear-remove\"][data-gear-id=\"kg-shin\"]" },
+        { "action": "expectVisible", "as": "parent", "selector": "[data-testid=\"session-edit\"][data-session-id=\"ks-practice\"]" },
+        { "action": "expectVisible", "as": "parent", "selector": "[data-testid=\"add-session\"]" }
+      ]
+    }
+  ]
+}
