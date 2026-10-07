@@ -118,7 +118,7 @@
 
 <script type="module">
 import {
-  esc, isAdult, hubConfirm, searchMatch,
+  esc, isAdult, hubConfirm, searchMatch, glyph, chickadee,
   createShareHelper, activeShareLinks, SHARE_CALENDAR_EXPIRY_CHOICES, DEFAULT_SHARE_EXPIRY_HOURS,
 } from "/hub-sdk.js";
 import {
@@ -148,6 +148,7 @@ const shareUi = createShareUi({
   noun: "activity",
   scopeHtml: () => "The page shows the activity’s name, season and usual location, the gear list, and every session with its date, time and place, latest date first. The calendar link carries the same sessions, from a month ago onward. Which child it’s for, the coach’s details and your notes stay in the household. Anyone who gets the link can read it.",
   esc,
+  glyph,
   confirm: (message, opts) => hubConfirm({ message, ...opts, destructive: true }),
   writeText: (text) => navigator.clipboard.writeText(text),
   activeLinks: activeShareLinks,
@@ -390,7 +391,7 @@ function renderSession(s, showActivity) {
   const where = s.location || act?.location || "";
   return `
     <div class="row" data-testid="session-row" data-session-id="${esc(s.id)}">
-      <div class="row-icon" aria-hidden="true">${showActivity ? esc(act?.emoji ?? kind.icon) : kind.icon}</div>
+      <div class="row-icon" aria-hidden="true">${showActivity && act?.emoji ? esc(act.emoji) : glyph(kind.glyph)}</div>
       <div class="row-body">
         <div class="row-title">
           ${showActivity && act ? `${esc(act.name)} — ` : ""}${esc(kind.label)}
@@ -424,9 +425,10 @@ function render() {
 
   if (!acts.length) {
     root.innerHTML = `
-      <div class="topbar"><h1>⚽ Kids' Activities</h1></div>
+      <div class="topbar"><h1>${glyph("ball")} Kids' Activities</h1></div>
       ${error ? `<div class="error">${esc(error)}</div>` : ""}
       <div class="card empty">
+        <div>${chickadee("nest", { size: 72 })}</div>
         No activities yet.${canManage() ? "" : " Ask an adult to set up the season."}
         ${canManage() ? `<div style="margin-top:12px"><button class="btn" data-add-activity>+ Add an activity</button></div>` : ""}
       </div>`;
@@ -446,7 +448,7 @@ function render() {
   root.innerHTML = `
     <div class="topbar">
       <div>
-        <h1>⚽ Kids' Activities</h1>
+        <h1>${glyph("ball")} Kids' Activities</h1>
         <p class="muted tiny">Practices, games, and what to bring.</p>
       </div>
       ${canManage() ? `<button class="btn" data-add-session data-testid="add-session">+ Session</button>` : ""}
@@ -462,13 +464,13 @@ function render() {
       <div class="card" style="margin-bottom:12px" data-testid="activity-detail" data-activity-id="${esc(current.id)}">
         <div class="row-title">${esc(current.emoji)} ${esc(current.name)} <span class="muted tiny">· ${esc(memberName(current.member_id))}${current.season ? ` · ${esc(current.season)}` : ""}</span></div>
         <div class="row-meta">
-          ${current.location ? `📍 ${esc(current.location)} · ` : ""}
+          ${current.location ? `${glyph("location")} ${esc(current.location)} · ` : ""}
           ${current.coach_name ? `${esc(current.coach_name)}${current.coach_contact ? ` (${esc(current.coach_contact)})` : ""}` : ""}
         </div>
         ${current.notes ? `<div class="row-meta">${esc(current.notes)}</div>` : ""}
         <div class="section-head" style="margin:12px 0 6px"><h2>Gear checklist</h2></div>
         <div class="gear-list">
-          ${currentGear.map((g) => `<span class="gear-chip" data-testid="gear-chip" data-gear-id="${esc(g.id)}">${esc(g.name)}${canManage() ? `<button data-remove-gear="${esc(g.id)}" title="Remove" data-testid="gear-remove" data-gear-id="${esc(g.id)}">✕</button>` : ""}</span>`).join("")}
+          ${currentGear.map((g) => `<span class="gear-chip" data-testid="gear-chip" data-gear-id="${esc(g.id)}">${esc(g.name)}${canManage() ? `<button data-remove-gear="${esc(g.id)}" title="Remove" aria-label="Remove" data-testid="gear-remove" data-gear-id="${esc(g.id)}">${glyph("close")}</button>` : ""}</span>`).join("")}
           ${!currentGear.length ? `<span class="muted tiny">Nothing listed yet.</span>` : ""}
         </div>
         ${canManage() ? `
@@ -563,7 +565,7 @@ function openSessionEditor(existing) {
   const acts = sortedActivities(activities);
   const defaultActivity = s?.activity_id ?? (currentActivityId !== "all" ? currentActivityId : acts[0]?.id);
   const actOptions = acts.map((a) => `<option value="${esc(a.id)}" ${defaultActivity === a.id ? "selected" : ""}>${esc(a.emoji)} ${esc(a.name)}</option>`).join("");
-  const kindOptions = SESSION_KINDS.map((k) => `<option value="${k.value}" ${(s?.kind ?? "practice") === k.value ? "selected" : ""}>${k.icon} ${k.label}</option>`).join("");
+  const kindOptions = SESSION_KINDS.map((k) => `<option value="${k.value}" ${(s?.kind ?? "practice") === k.value ? "selected" : ""}>${k.label}</option>`).join("");
   openModal(`
     <h2>${s ? "Edit session" : "Add session"}</h2>
     <form class="form" id="session-form">

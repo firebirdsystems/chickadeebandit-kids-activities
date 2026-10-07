@@ -4,16 +4,16 @@
  */
 
 export const SESSION_KINDS = [
-  { value: "practice",  label: "Practice",  icon: "🏃" },
-  { value: "game",      label: "Game",      icon: "🏆" },
-  { value: "rehearsal", label: "Rehearsal", icon: "🎭" },
-  { value: "event",     label: "Event",     icon: "📅" },
+  { value: "practice",  label: "Practice",  glyph: "ball" },
+  { value: "game",      label: "Game",      glyph: "trophy" },
+  { value: "rehearsal", label: "Rehearsal", glyph: "metronome" },
+  { value: "event",     label: "Event",     glyph: "calendar" },
 ];
 
 const KIND_BY_VALUE = new Map(SESSION_KINDS.map((k) => [k.value, k]));
 
 export function sessionKindMeta(v) {
-  return KIND_BY_VALUE.get(v) ?? { value: "event", label: "Event", icon: "📅" };
+  return KIND_BY_VALUE.get(v) ?? { value: "event", label: "Event", glyph: "calendar" };
 }
 
 function atMidnight(d) {
