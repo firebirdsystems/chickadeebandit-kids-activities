@@ -1,0 +1,1806 @@
+{
+  "seed": [
+    {
+      "sql": "INSERT INTO app_kids_activities__activities (id, member_id, name, location, emoji, archived, created_by, created_at, updated_at, season, coach_name, coach_contact, notes) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-120 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-30 days'), ?, ?, ?, ?)",
+      "params": [
+        "perf-act-soccer",
+        "{{child}}",
+        "U10 Soccer",
+        "Miller Park",
+        "⚽",
+        0,
+        "{{me}}",
+        "Fall season",
+        "Coach Dana",
+        "555-0182",
+        "Arrive fifteen minutes early for warm-up."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-118 days'))",
+      "params": [
+        "perf-gear-01",
+        "perf-act-soccer",
+        "Shin guards",
+        0,
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-118 days','-1 minutes'))",
+      "params": [
+        "perf-gear-02",
+        "perf-act-soccer",
+        "Cleats",
+        1,
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-118 days','-2 minutes'))",
+      "params": [
+        "perf-gear-03",
+        "perf-act-soccer",
+        "Water bottle",
+        2,
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-118 days','-3 minutes'))",
+      "params": [
+        "perf-gear-04",
+        "perf-act-soccer",
+        "Team jersey",
+        3,
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-118 days','-4 minutes'))",
+      "params": [
+        "perf-gear-05",
+        "perf-act-soccer",
+        "Size 4 ball",
+        4,
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-118 days','-5 minutes'))",
+      "params": [
+        "perf-gear-06",
+        "perf-act-soccer",
+        "Long socks",
+        5,
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__activities (id, member_id, name, location, emoji, archived, created_by, created_at, updated_at, coach_name, coach_contact, notes) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-114 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-27 days'), ?, ?, ?)",
+      "params": [
+        "perf-act-piano",
+        "{{child2}}",
+        "Piano",
+        "Ms. Lee's studio",
+        "🎹",
+        0,
+        "{{partner}}",
+        "Ms. Lee",
+        "lee.studio@example.com",
+        "Practice log is checked every lesson."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-112 days'))",
+      "params": [
+        "perf-gear-07",
+        "perf-act-piano",
+        "Lesson book",
+        0,
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-112 days','-1 minutes'))",
+      "params": [
+        "perf-gear-08",
+        "perf-act-piano",
+        "Theory workbook",
+        1,
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-112 days','-2 minutes'))",
+      "params": [
+        "perf-gear-09",
+        "perf-act-piano",
+        "Practice log",
+        2,
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__activities (id, member_id, name, location, emoji, archived, created_by, created_at, updated_at, season, coach_name, coach_contact) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-108 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-24 days'), ?, ?, ?)",
+      "params": [
+        "perf-act-swim",
+        "{{child}}",
+        "Swim Team",
+        "Community Pool",
+        "🏊",
+        0,
+        "{{me}}",
+        "Year-round",
+        "Coach Okafor",
+        "555-0147"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-106 days'))",
+      "params": [
+        "perf-gear-10",
+        "perf-act-swim",
+        "Goggles",
+        0,
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-106 days','-1 minutes'))",
+      "params": [
+        "perf-gear-11",
+        "perf-act-swim",
+        "Swim cap",
+        1,
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-106 days','-2 minutes'))",
+      "params": [
+        "perf-gear-12",
+        "perf-act-swim",
+        "Towel",
+        2,
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-106 days','-3 minutes'))",
+      "params": [
+        "perf-gear-13",
+        "perf-act-swim",
+        "Team suit",
+        3,
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-106 days','-4 minutes'))",
+      "params": [
+        "perf-gear-14",
+        "perf-act-swim",
+        "Flip-flops",
+        4,
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__activities (id, member_id, name, location, emoji, archived, created_by, created_at, updated_at, season, coach_name, coach_contact, notes) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-102 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-21 days'), ?, ?, ?, ?)",
+      "params": [
+        "perf-act-dance",
+        "{{child2}}",
+        "Ballet",
+        "Studio North",
+        "🩰",
+        0,
+        "{{partner}}",
+        "Fall term",
+        "Miss Elena",
+        "555-0119",
+        "Hair in a bun for every class."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-100 days'))",
+      "params": [
+        "perf-gear-15",
+        "perf-act-dance",
+        "Ballet slippers",
+        0,
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-100 days','-1 minutes'))",
+      "params": [
+        "perf-gear-16",
+        "perf-act-dance",
+        "Leotard",
+        1,
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-100 days','-2 minutes'))",
+      "params": [
+        "perf-gear-17",
+        "perf-act-dance",
+        "Tights",
+        2,
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-100 days','-3 minutes'))",
+      "params": [
+        "perf-gear-18",
+        "perf-act-dance",
+        "Hair pins",
+        3,
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__activities (id, member_id, name, location, emoji, archived, created_by, created_at, updated_at, coach_name) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-96 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-18 days'), ?)",
+      "params": [
+        "perf-act-scouts",
+        "{{child}}",
+        "Scouts",
+        "Church hall",
+        "🏕",
+        0,
+        "{{me}}",
+        "Mr. Bennett"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-94 days'))",
+      "params": [
+        "perf-gear-19",
+        "perf-act-scouts",
+        "Uniform shirt",
+        0,
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-94 days','-1 minutes'))",
+      "params": [
+        "perf-gear-20",
+        "perf-act-scouts",
+        "Handbook",
+        1,
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-94 days','-2 minutes'))",
+      "params": [
+        "perf-gear-21",
+        "perf-act-scouts",
+        "Neckerchief",
+        2,
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__activities (id, member_id, name, location, emoji, archived, created_by, created_at, updated_at, season, coach_name) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-90 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-15 days'), ?, ?)",
+      "params": [
+        "perf-act-art",
+        "{{child2}}",
+        "Art Club",
+        "Room 12",
+        "🎨",
+        0,
+        "{{partner}}",
+        "After school",
+        "Ms. Park"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-88 days'))",
+      "params": [
+        "perf-gear-22",
+        "perf-act-art",
+        "Smock",
+        0,
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-88 days','-1 minutes'))",
+      "params": [
+        "perf-gear-23",
+        "perf-act-art",
+        "Sketchbook",
+        1,
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__activities (id, member_id, name, location, emoji, archived, created_by, created_at, updated_at, season, coach_name, coach_contact) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-84 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-12 days'), ?, ?, ?)",
+      "params": [
+        "perf-act-tball",
+        "{{child2}}",
+        "T-Ball",
+        "Elm Field",
+        "⚾",
+        1,
+        "{{me}}",
+        "Spring season",
+        "Coach Ray",
+        "555-0166"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-82 days'))",
+      "params": [
+        "perf-gear-24",
+        "perf-act-tball",
+        "Glove",
+        0,
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-82 days','-1 minutes'))",
+      "params": [
+        "perf-gear-25",
+        "perf-act-tball",
+        "Cap",
+        1,
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__activities (id, member_id, name, location, emoji, archived, created_by, created_at, updated_at, season) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-78 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-9 days'), ?)",
+      "params": [
+        "perf-act-chess",
+        "{{child}}",
+        "Chess Club",
+        "Library",
+        "♟",
+        1,
+        "{{partner}}",
+        "Last year"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-1 minutes'))",
+      "params": [
+        "perf-sess-001",
+        "perf-act-swim",
+        "practice",
+        "{{date:-56}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-2 minutes'))",
+      "params": [
+        "perf-sess-002",
+        "perf-act-soccer",
+        "practice",
+        "{{date:-55}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-3 minutes'))",
+      "params": [
+        "perf-sess-003",
+        "perf-act-art",
+        "event",
+        "{{date:-55}}",
+        "15:15",
+        "16:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, notes) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-4 minutes'), ?)",
+      "params": [
+        "perf-sess-004",
+        "perf-act-piano",
+        "practice",
+        "{{date:-54}}",
+        "16:00",
+        "16:45",
+        "{{partner}}",
+        "Bring a snack to share"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-5 minutes'))",
+      "params": [
+        "perf-sess-005",
+        "perf-act-scouts",
+        "event",
+        "{{date:-54}}",
+        "18:30",
+        "20:00",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-6 minutes'))",
+      "params": [
+        "perf-sess-006",
+        "perf-act-soccer",
+        "practice",
+        "{{date:-53}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-7 minutes'))",
+      "params": [
+        "perf-sess-007",
+        "perf-act-dance",
+        "rehearsal",
+        "{{date:-53}}",
+        "16:15",
+        "17:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-8 minutes'))",
+      "params": [
+        "perf-sess-008",
+        "perf-act-swim",
+        "practice",
+        "{{date:-52}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-9 minutes'))",
+      "params": [
+        "perf-sess-009",
+        "perf-act-soccer",
+        "game",
+        "{{date:-51}}",
+        "09:00",
+        "10:15",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-10 minutes'))",
+      "params": [
+        "perf-sess-010",
+        "perf-act-swim",
+        "practice",
+        "{{date:-49}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-11 minutes'))",
+      "params": [
+        "perf-sess-011",
+        "perf-act-soccer",
+        "practice",
+        "{{date:-48}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-12 minutes'))",
+      "params": [
+        "perf-sess-012",
+        "perf-act-art",
+        "event",
+        "{{date:-48}}",
+        "15:15",
+        "16:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, notes) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-13 minutes'), ?)",
+      "params": [
+        "perf-sess-013",
+        "perf-act-piano",
+        "practice",
+        "{{date:-47}}",
+        "16:00",
+        "16:45",
+        "{{partner}}",
+        "Picture day, full uniform"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-14 minutes'))",
+      "params": [
+        "perf-sess-014",
+        "perf-act-scouts",
+        "event",
+        "{{date:-47}}",
+        "18:30",
+        "20:00",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-15 minutes'))",
+      "params": [
+        "perf-sess-015",
+        "perf-act-soccer",
+        "practice",
+        "{{date:-46}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-16 minutes'))",
+      "params": [
+        "perf-sess-016",
+        "perf-act-dance",
+        "rehearsal",
+        "{{date:-46}}",
+        "16:15",
+        "17:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-17 minutes'))",
+      "params": [
+        "perf-sess-017",
+        "perf-act-swim",
+        "practice",
+        "{{date:-45}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, location) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-18 minutes'), ?)",
+      "params": [
+        "perf-sess-018",
+        "perf-act-soccer",
+        "game",
+        "{{date:-44}}",
+        "09:00",
+        "10:15",
+        "{{me}}",
+        "North Gym"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-19 minutes'))",
+      "params": [
+        "perf-sess-019",
+        "perf-act-swim",
+        "practice",
+        "{{date:-42}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-20 minutes'))",
+      "params": [
+        "perf-sess-020",
+        "perf-act-soccer",
+        "practice",
+        "{{date:-41}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-21 minutes'))",
+      "params": [
+        "perf-sess-021",
+        "perf-act-art",
+        "event",
+        "{{date:-41}}",
+        "15:15",
+        "16:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, notes) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-22 minutes'), ?)",
+      "params": [
+        "perf-sess-022",
+        "perf-act-piano",
+        "practice",
+        "{{date:-40}}",
+        "16:00",
+        "16:45",
+        "{{partner}}",
+        "Away game, leave by 8:15"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-23 minutes'))",
+      "params": [
+        "perf-sess-023",
+        "perf-act-scouts",
+        "event",
+        "{{date:-40}}",
+        "18:30",
+        "20:00",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-24 minutes'))",
+      "params": [
+        "perf-sess-024",
+        "perf-act-soccer",
+        "practice",
+        "{{date:-39}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-25 minutes'))",
+      "params": [
+        "perf-sess-025",
+        "perf-act-dance",
+        "rehearsal",
+        "{{date:-39}}",
+        "16:15",
+        "17:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-26 minutes'))",
+      "params": [
+        "perf-sess-026",
+        "perf-act-swim",
+        "practice",
+        "{{date:-38}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-27 minutes'))",
+      "params": [
+        "perf-sess-027",
+        "perf-act-soccer",
+        "game",
+        "{{date:-37}}",
+        "09:00",
+        "10:15",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-28 minutes'))",
+      "params": [
+        "perf-sess-028",
+        "perf-act-swim",
+        "practice",
+        "{{date:-35}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-29 minutes'))",
+      "params": [
+        "perf-sess-029",
+        "perf-act-soccer",
+        "practice",
+        "{{date:-34}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-30 minutes'))",
+      "params": [
+        "perf-sess-030",
+        "perf-act-art",
+        "event",
+        "{{date:-34}}",
+        "15:15",
+        "16:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, notes) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-31 minutes'), ?)",
+      "params": [
+        "perf-sess-031",
+        "perf-act-piano",
+        "practice",
+        "{{date:-33}}",
+        "16:00",
+        "16:45",
+        "{{partner}}",
+        "Recital piece run-through"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-32 minutes'))",
+      "params": [
+        "perf-sess-032",
+        "perf-act-scouts",
+        "event",
+        "{{date:-33}}",
+        "18:30",
+        "20:00",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-33 minutes'))",
+      "params": [
+        "perf-sess-033",
+        "perf-act-soccer",
+        "practice",
+        "{{date:-32}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-34 minutes'))",
+      "params": [
+        "perf-sess-034",
+        "perf-act-dance",
+        "rehearsal",
+        "{{date:-32}}",
+        "16:15",
+        "17:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-35 minutes'))",
+      "params": [
+        "perf-sess-035",
+        "perf-act-swim",
+        "practice",
+        "{{date:-31}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, location) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-36 minutes'), ?)",
+      "params": [
+        "perf-sess-036",
+        "perf-act-soccer",
+        "game",
+        "{{date:-30}}",
+        "09:00",
+        "10:15",
+        "{{me}}",
+        "School auditorium"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-37 minutes'))",
+      "params": [
+        "perf-sess-037",
+        "perf-act-swim",
+        "practice",
+        "{{date:-28}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-38 minutes'))",
+      "params": [
+        "perf-sess-038",
+        "perf-act-soccer",
+        "practice",
+        "{{date:-27}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-39 minutes'))",
+      "params": [
+        "perf-sess-039",
+        "perf-act-art",
+        "event",
+        "{{date:-27}}",
+        "15:15",
+        "16:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, notes) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-40 minutes'), ?)",
+      "params": [
+        "perf-sess-040",
+        "perf-act-piano",
+        "practice",
+        "{{date:-26}}",
+        "16:00",
+        "16:45",
+        "{{partner}}",
+        "Indoor if it rains"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-41 minutes'))",
+      "params": [
+        "perf-sess-041",
+        "perf-act-scouts",
+        "event",
+        "{{date:-26}}",
+        "18:30",
+        "20:00",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-42 minutes'))",
+      "params": [
+        "perf-sess-042",
+        "perf-act-soccer",
+        "practice",
+        "{{date:-25}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-43 minutes'))",
+      "params": [
+        "perf-sess-043",
+        "perf-act-dance",
+        "rehearsal",
+        "{{date:-25}}",
+        "16:15",
+        "17:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-44 minutes'))",
+      "params": [
+        "perf-sess-044",
+        "perf-act-swim",
+        "practice",
+        "{{date:-24}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-45 minutes'))",
+      "params": [
+        "perf-sess-045",
+        "perf-act-soccer",
+        "game",
+        "{{date:-23}}",
+        "09:00",
+        "10:15",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-46 minutes'))",
+      "params": [
+        "perf-sess-046",
+        "perf-act-swim",
+        "practice",
+        "{{date:-21}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-47 minutes'))",
+      "params": [
+        "perf-sess-047",
+        "perf-act-soccer",
+        "practice",
+        "{{date:-20}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-48 minutes'))",
+      "params": [
+        "perf-sess-048",
+        "perf-act-art",
+        "event",
+        "{{date:-20}}",
+        "15:15",
+        "16:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, notes) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-49 minutes'), ?)",
+      "params": [
+        "perf-sess-049",
+        "perf-act-piano",
+        "practice",
+        "{{date:-19}}",
+        "16:00",
+        "16:45",
+        "{{partner}}",
+        "Carpool with the Patels"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-50 minutes'))",
+      "params": [
+        "perf-sess-050",
+        "perf-act-scouts",
+        "event",
+        "{{date:-19}}",
+        "18:30",
+        "20:00",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-51 minutes'))",
+      "params": [
+        "perf-sess-051",
+        "perf-act-soccer",
+        "practice",
+        "{{date:-18}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-52 minutes'))",
+      "params": [
+        "perf-sess-052",
+        "perf-act-dance",
+        "rehearsal",
+        "{{date:-18}}",
+        "16:15",
+        "17:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-53 minutes'))",
+      "params": [
+        "perf-sess-053",
+        "perf-act-swim",
+        "practice",
+        "{{date:-17}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, location) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-54 minutes'), ?)",
+      "params": [
+        "perf-sess-054",
+        "perf-act-soccer",
+        "game",
+        "{{date:-16}}",
+        "09:00",
+        "10:15",
+        "{{me}}",
+        "Lakeside Pool"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-55 minutes'))",
+      "params": [
+        "perf-sess-055",
+        "perf-act-swim",
+        "practice",
+        "{{date:-14}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-56 minutes'))",
+      "params": [
+        "perf-sess-056",
+        "perf-act-soccer",
+        "practice",
+        "{{date:-13}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-57 minutes'))",
+      "params": [
+        "perf-sess-057",
+        "perf-act-art",
+        "event",
+        "{{date:-13}}",
+        "15:15",
+        "16:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, notes) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-58 minutes'), ?)",
+      "params": [
+        "perf-sess-058",
+        "perf-act-piano",
+        "practice",
+        "{{date:-12}}",
+        "16:00",
+        "16:45",
+        "{{partner}}",
+        "Bring a snack to share"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-59 minutes'))",
+      "params": [
+        "perf-sess-059",
+        "perf-act-scouts",
+        "event",
+        "{{date:-12}}",
+        "18:30",
+        "20:00",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-60 minutes'))",
+      "params": [
+        "perf-sess-060",
+        "perf-act-soccer",
+        "practice",
+        "{{date:-11}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-61 minutes'))",
+      "params": [
+        "perf-sess-061",
+        "perf-act-dance",
+        "rehearsal",
+        "{{date:-11}}",
+        "16:15",
+        "17:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-62 minutes'))",
+      "params": [
+        "perf-sess-062",
+        "perf-act-swim",
+        "practice",
+        "{{date:-10}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-63 minutes'))",
+      "params": [
+        "perf-sess-063",
+        "perf-act-soccer",
+        "game",
+        "{{date:-9}}",
+        "09:00",
+        "10:15",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-64 minutes'))",
+      "params": [
+        "perf-sess-064",
+        "perf-act-swim",
+        "practice",
+        "{{date:-7}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-65 minutes'))",
+      "params": [
+        "perf-sess-065",
+        "perf-act-soccer",
+        "practice",
+        "{{date:-6}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-66 minutes'))",
+      "params": [
+        "perf-sess-066",
+        "perf-act-art",
+        "event",
+        "{{date:-6}}",
+        "15:15",
+        "16:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, notes) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-67 minutes'), ?)",
+      "params": [
+        "perf-sess-067",
+        "perf-act-piano",
+        "practice",
+        "{{date:-5}}",
+        "16:00",
+        "16:45",
+        "{{partner}}",
+        "Picture day, full uniform"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-68 minutes'))",
+      "params": [
+        "perf-sess-068",
+        "perf-act-scouts",
+        "event",
+        "{{date:-5}}",
+        "18:30",
+        "20:00",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-69 minutes'))",
+      "params": [
+        "perf-sess-069",
+        "perf-act-soccer",
+        "practice",
+        "{{date:-4}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-70 minutes'))",
+      "params": [
+        "perf-sess-070",
+        "perf-act-dance",
+        "rehearsal",
+        "{{date:-4}}",
+        "16:15",
+        "17:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-71 minutes'))",
+      "params": [
+        "perf-sess-071",
+        "perf-act-swim",
+        "practice",
+        "{{date:-3}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, location) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-72 minutes'), ?)",
+      "params": [
+        "perf-sess-072",
+        "perf-act-soccer",
+        "game",
+        "{{date:-2}}",
+        "09:00",
+        "10:15",
+        "{{me}}",
+        "Riverside Fields"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-73 minutes'))",
+      "params": [
+        "perf-sess-073",
+        "perf-act-swim",
+        "practice",
+        "{{date:0}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-74 minutes'))",
+      "params": [
+        "perf-sess-074",
+        "perf-act-soccer",
+        "practice",
+        "{{date:1}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-75 minutes'))",
+      "params": [
+        "perf-sess-075",
+        "perf-act-art",
+        "event",
+        "{{date:1}}",
+        "15:15",
+        "16:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, notes) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-76 minutes'), ?)",
+      "params": [
+        "perf-sess-076",
+        "perf-act-piano",
+        "practice",
+        "{{date:2}}",
+        "16:00",
+        "16:45",
+        "{{partner}}",
+        "Away game, leave by 8:15"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-77 minutes'))",
+      "params": [
+        "perf-sess-077",
+        "perf-act-scouts",
+        "event",
+        "{{date:2}}",
+        "18:30",
+        "20:00",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-78 minutes'))",
+      "params": [
+        "perf-sess-078",
+        "perf-act-soccer",
+        "practice",
+        "{{date:3}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-79 minutes'))",
+      "params": [
+        "perf-sess-079",
+        "perf-act-dance",
+        "rehearsal",
+        "{{date:3}}",
+        "16:15",
+        "17:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-80 minutes'))",
+      "params": [
+        "perf-sess-080",
+        "perf-act-swim",
+        "practice",
+        "{{date:4}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-81 minutes'))",
+      "params": [
+        "perf-sess-081",
+        "perf-act-soccer",
+        "game",
+        "{{date:5}}",
+        "09:00",
+        "10:15",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-82 minutes'))",
+      "params": [
+        "perf-sess-082",
+        "perf-act-swim",
+        "practice",
+        "{{date:7}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-83 minutes'))",
+      "params": [
+        "perf-sess-083",
+        "perf-act-soccer",
+        "practice",
+        "{{date:8}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-84 minutes'))",
+      "params": [
+        "perf-sess-084",
+        "perf-act-art",
+        "event",
+        "{{date:8}}",
+        "15:15",
+        "16:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, notes) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-85 minutes'), ?)",
+      "params": [
+        "perf-sess-085",
+        "perf-act-piano",
+        "practice",
+        "{{date:9}}",
+        "16:00",
+        "16:45",
+        "{{partner}}",
+        "Recital piece run-through"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-86 minutes'))",
+      "params": [
+        "perf-sess-086",
+        "perf-act-scouts",
+        "event",
+        "{{date:9}}",
+        "18:30",
+        "20:00",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-87 minutes'))",
+      "params": [
+        "perf-sess-087",
+        "perf-act-soccer",
+        "practice",
+        "{{date:10}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-88 minutes'))",
+      "params": [
+        "perf-sess-088",
+        "perf-act-dance",
+        "rehearsal",
+        "{{date:10}}",
+        "16:15",
+        "17:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-89 minutes'))",
+      "params": [
+        "perf-sess-089",
+        "perf-act-swim",
+        "practice",
+        "{{date:11}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, location) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-90 minutes'), ?)",
+      "params": [
+        "perf-sess-090",
+        "perf-act-soccer",
+        "game",
+        "{{date:12}}",
+        "09:00",
+        "10:15",
+        "{{me}}",
+        "North Gym"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-91 minutes'))",
+      "params": [
+        "perf-sess-091",
+        "perf-act-swim",
+        "practice",
+        "{{date:14}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-92 minutes'))",
+      "params": [
+        "perf-sess-092",
+        "perf-act-soccer",
+        "practice",
+        "{{date:15}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-93 minutes'))",
+      "params": [
+        "perf-sess-093",
+        "perf-act-art",
+        "event",
+        "{{date:15}}",
+        "15:15",
+        "16:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, notes) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-94 minutes'), ?)",
+      "params": [
+        "perf-sess-094",
+        "perf-act-piano",
+        "practice",
+        "{{date:16}}",
+        "16:00",
+        "16:45",
+        "{{partner}}",
+        "Indoor if it rains"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-95 minutes'))",
+      "params": [
+        "perf-sess-095",
+        "perf-act-scouts",
+        "event",
+        "{{date:16}}",
+        "18:30",
+        "20:00",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-96 minutes'))",
+      "params": [
+        "perf-sess-096",
+        "perf-act-soccer",
+        "practice",
+        "{{date:17}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-97 minutes'))",
+      "params": [
+        "perf-sess-097",
+        "perf-act-dance",
+        "rehearsal",
+        "{{date:17}}",
+        "16:15",
+        "17:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-98 minutes'))",
+      "params": [
+        "perf-sess-098",
+        "perf-act-swim",
+        "practice",
+        "{{date:18}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-99 minutes'))",
+      "params": [
+        "perf-sess-099",
+        "perf-act-soccer",
+        "game",
+        "{{date:19}}",
+        "09:00",
+        "10:15",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-100 minutes'))",
+      "params": [
+        "perf-sess-100",
+        "perf-act-swim",
+        "practice",
+        "{{date:21}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-101 minutes'))",
+      "params": [
+        "perf-sess-101",
+        "perf-act-soccer",
+        "practice",
+        "{{date:22}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-102 minutes'))",
+      "params": [
+        "perf-sess-102",
+        "perf-act-art",
+        "event",
+        "{{date:22}}",
+        "15:15",
+        "16:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, notes) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-103 minutes'), ?)",
+      "params": [
+        "perf-sess-103",
+        "perf-act-piano",
+        "practice",
+        "{{date:23}}",
+        "16:00",
+        "16:45",
+        "{{partner}}",
+        "Carpool with the Patels"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-104 minutes'))",
+      "params": [
+        "perf-sess-104",
+        "perf-act-scouts",
+        "event",
+        "{{date:23}}",
+        "18:30",
+        "20:00",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-105 minutes'))",
+      "params": [
+        "perf-sess-105",
+        "perf-act-soccer",
+        "practice",
+        "{{date:24}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-106 minutes'))",
+      "params": [
+        "perf-sess-106",
+        "perf-act-dance",
+        "rehearsal",
+        "{{date:24}}",
+        "16:15",
+        "17:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-107 minutes'))",
+      "params": [
+        "perf-sess-107",
+        "perf-act-swim",
+        "practice",
+        "{{date:25}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, location) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-108 minutes'), ?)",
+      "params": [
+        "perf-sess-108",
+        "perf-act-soccer",
+        "game",
+        "{{date:26}}",
+        "09:00",
+        "10:15",
+        "{{me}}",
+        "School auditorium"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-109 minutes'))",
+      "params": [
+        "perf-sess-109",
+        "perf-act-swim",
+        "practice",
+        "{{date:28}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-110 minutes'))",
+      "params": [
+        "perf-sess-110",
+        "perf-act-soccer",
+        "practice",
+        "{{date:29}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-111 minutes'))",
+      "params": [
+        "perf-sess-111",
+        "perf-act-art",
+        "event",
+        "{{date:29}}",
+        "15:15",
+        "16:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at, notes) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-112 minutes'), ?)",
+      "params": [
+        "perf-sess-112",
+        "perf-act-piano",
+        "practice",
+        "{{date:30}}",
+        "16:00",
+        "16:45",
+        "{{partner}}",
+        "Bring a snack to share"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-113 minutes'))",
+      "params": [
+        "perf-sess-113",
+        "perf-act-scouts",
+        "event",
+        "{{date:30}}",
+        "18:30",
+        "20:00",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-114 minutes'))",
+      "params": [
+        "perf-sess-114",
+        "perf-act-soccer",
+        "practice",
+        "{{date:31}}",
+        "17:30",
+        "18:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-115 minutes'))",
+      "params": [
+        "perf-sess-115",
+        "perf-act-dance",
+        "rehearsal",
+        "{{date:31}}",
+        "16:15",
+        "17:15",
+        "{{partner}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-116 minutes'))",
+      "params": [
+        "perf-sess-116",
+        "perf-act-swim",
+        "practice",
+        "{{date:32}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-117 minutes'))",
+      "params": [
+        "perf-sess-117",
+        "perf-act-soccer",
+        "game",
+        "{{date:33}}",
+        "09:00",
+        "10:15",
+        "{{me}}"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days','-118 minutes'))",
+      "params": [
+        "perf-sess-118",
+        "perf-act-swim",
+        "practice",
+        "{{date:35}}",
+        "06:30",
+        "07:30",
+        "{{me}}"
+      ]
+    }
+  ]
+}
