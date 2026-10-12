@@ -284,39 +284,33 @@ async function syncCalendar() {
 }
 
 /* ── Mutations ─────────────────────────────────────────────────────────────── */
+// saveActivity and saveSession send the write before anything is drawn: the
+// form stays open until the hub has the row, and a refused write throws to the
+// form's submit handler, which says so there and leaves what was typed in place.
 async function saveActivity(fields, existingId) {
   const now = nowIso();
   if (existingId) {
+    await db("UPDATE app_kids_activities__activities SET member_id=?, name=?, season=?, location=?, coach_name=?, coach_contact=?, notes=?, emoji=?, updated_at=? WHERE id=?",
+      [fields.member_id, fields.name, fields.season, fields.location, fields.coach_name, fields.coach_contact, fields.notes, fields.emoji, now, existingId]);
     const idx = activities.findIndex((a) => a.id === existingId);
-    const prev = idx !== -1 ? activities[idx] : null;
     if (idx !== -1) activities[idx] = { ...activities[idx], ...fields, updated_at: now };
     closeModal(); render();
-    try {
-      await db("UPDATE app_kids_activities__activities SET member_id=?, name=?, season=?, location=?, coach_name=?, coach_contact=?, notes=?, emoji=?, updated_at=? WHERE id=?",
-        [fields.member_id, fields.name, fields.season, fields.location, fields.coach_name, fields.coach_contact, fields.notes, fields.emoji, now, existingId]);
-      syncCalendar();
-    } catch (e) { if (idx !== -1 && prev) activities[idx] = prev; showError(e.message); }
+    syncCalendar();
   } else {
     const row = { id: crypto.randomUUID(), ...fields, archived: 0, created_by: me.id, created_at: now, updated_at: now };
+    await db("INSERT INTO app_kids_activities__activities (id, member_id, name, season, location, coach_name, coach_contact, notes, emoji, archived, created_by, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,0,?,?,?)",
+      [row.id, row.member_id, row.name, row.season, row.location, row.coach_name, row.coach_contact, row.notes, row.emoji, row.created_by, now, now]);
     activities = [...activities, row];
     currentActivityId = row.id;
     closeModal(); render();
-    try {
-      await db("INSERT INTO app_kids_activities__activities (id, member_id, name, season, location, coach_name, coach_contact, notes, emoji, archived, created_by, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,0,?,?,?)",
-        [row.id, row.member_id, row.name, row.season, row.location, row.coach_name, row.coach_contact, row.notes, row.emoji, row.created_by, now, now]);
-      // The SEASON is the event, not the sessions: adding a practice is
-      // routine schedule upkeep and a season's worth of them lands in one go.
-      await publishEvent("kids_activity.season_started", row.id, {
-        name: row.name,
-        season: row.season,
-        member_id: row.member_id,
-      });
-      syncCalendar();
-    } catch (e) {
-      activities = activities.filter((a) => a.id !== row.id);
-      currentActivityId = "all";
-      showError(e.message);
-    }
+    // The SEASON is the event, not the sessions: adding a practice is
+    // routine schedule upkeep and a season's worth of them lands in one go.
+    publishEvent("kids_activity.season_started", row.id, {
+      name: row.name,
+      season: row.season,
+      member_id: row.member_id,
+    });
+    syncCalendar();
   }
 }
 
@@ -330,31 +324,24 @@ async function archiveActivity(id) {
   try {
     await db("UPDATE app_kids_activities__activities SET archived = 1 WHERE id = ?", [id]);
     syncCalendar();
-  } catch (e) { activities = prev; showError(e.message); }
+  } catch (e) { console.error(e); activities = prev; showError("Couldn’t archive the activity — try again."); }
 }
 
 async function saveSession(fields, existingId) {
   const now = nowIso();
   if (existingId) {
+    await db("UPDATE app_kids_activities__sessions SET activity_id=?, kind=?, session_date=?, start_time=?, end_time=?, location=?, notes=? WHERE id=?",
+      [fields.activity_id, fields.kind, fields.session_date, fields.start_time, fields.end_time, fields.location, fields.notes, existingId]);
     const idx = sessions.findIndex((s) => s.id === existingId);
-    const prev = idx !== -1 ? sessions[idx] : null;
     if (idx !== -1) sessions[idx] = { ...sessions[idx], ...fields };
-    closeModal(); render();
-    try {
-      await db("UPDATE app_kids_activities__sessions SET activity_id=?, kind=?, session_date=?, start_time=?, end_time=?, location=?, notes=? WHERE id=?",
-        [fields.activity_id, fields.kind, fields.session_date, fields.start_time, fields.end_time, fields.location, fields.notes, existingId]);
-      syncCalendar();
-    } catch (e) { if (idx !== -1 && prev) sessions[idx] = prev; showError(e.message); }
   } else {
     const row = { id: crypto.randomUUID(), ...fields, created_by: me.id, created_at: now };
+    await db("INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, location, notes, created_by, created_at) VALUES (?,?,?,?,?,?,?,?,?,?)",
+      [row.id, row.activity_id, row.kind, row.session_date, row.start_time, row.end_time, row.location, row.notes, row.created_by, now]);
     sessions = [...sessions, row];
-    closeModal(); render();
-    try {
-      await db("INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, location, notes, created_by, created_at) VALUES (?,?,?,?,?,?,?,?,?,?)",
-        [row.id, row.activity_id, row.kind, row.session_date, row.start_time, row.end_time, row.location, row.notes, row.created_by, now]);
-      syncCalendar();
-    } catch (e) { sessions = sessions.filter((s) => s.id !== row.id); showError(e.message); }
   }
+  closeModal(); render();
+  syncCalendar();
 }
 
 async function deleteSession(id) {
@@ -366,7 +353,7 @@ async function deleteSession(id) {
   try {
     await db("DELETE FROM app_kids_activities__sessions WHERE id = ?", [id]);
     syncCalendar();
-  } catch (e) { sessions = prev; showError(e.message); }
+  } catch (e) { console.error(e); sessions = prev; showError("Couldn’t delete the session — try again."); }
 }
 
 async function addGear(activityId, name) {
@@ -376,7 +363,13 @@ async function addGear(activityId, name) {
   try {
     await db("INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?,?,?,?,?,?)",
       [row.id, row.activity_id, row.name, row.sort_order, row.created_by, row.created_at]);
-  } catch (e) { gear = gear.filter((g) => g.id !== row.id); showError(e.message); }
+  } catch {
+    gear = gear.filter((g) => g.id !== row.id);
+    showError("Couldn’t add that — try again.");
+    // The field was cleared when the chip was drawn: put the word back to send again.
+    const input = document.getElementById("gear-name");
+    if (input && !input.value) input.value = name;
+  }
 }
 
 async function removeGear(id) {
@@ -384,7 +377,7 @@ async function removeGear(id) {
   gear = gear.filter((g) => g.id !== id);
   render();
   try { await db("DELETE FROM app_kids_activities__gear WHERE id = ?", [id]); }
-  catch (e) { gear = prev; showError(e.message); }
+  catch (e) { console.error(e); gear = prev; showError("Couldn’t remove that — try again."); }
 }
 
 /* ── Rendering ─────────────────────────────────────────────────────────────── */
@@ -508,7 +501,7 @@ function render() {
     const name = input.value.trim();
     if (!name || !current) return;
     input.value = "";
-    addGear(current.id, name).catch((err) => showError(err.message));
+    addGear(current.id, name).catch((err) => { console.error(err); showError("Couldn’t add that — try again."); });
   });
 }
 
@@ -523,9 +516,27 @@ function openModal(html) {
 }
 function closeModal() { modalEl?.remove(); modalEl = null; }
 
-function submitBtnBusy() {
+function submitBtnBusy(busy = true) {
   const btn = modalEl?.querySelector('button[type="submit"]');
-  if (btn) { btn.disabled = true; btn.textContent = "Saving…"; }
+  if (!btn) return;
+  if (busy) { btn.dataset.label = btn.textContent; btn.disabled = true; btn.textContent = "Saving…"; }
+  else { btn.disabled = false; btn.textContent = btn.dataset.label ?? "Save"; }
+}
+
+// A refused save: the form is still open as typed, so say it there and give
+// the button back.
+function saveFailed() {
+  const actions = modalEl?.querySelector(".modal-actions");
+  if (!actions) { showError("Couldn’t save — try again."); return; }
+  submitBtnBusy(false);
+  let line = modalEl.querySelector(".error");
+  if (!line) {
+    line = document.createElement("div");
+    line.className = "error";
+    line.setAttribute("role", "alert");
+    actions.before(line);
+  }
+  line.textContent = "Couldn’t save — try again.";
 }
 
 function openActivityEditor(existing) {
@@ -559,6 +570,7 @@ function openActivityEditor(existing) {
     e.preventDefault();
     const name = document.getElementById("a-name").value.trim();
     if (!name) { document.getElementById("a-name").focus(); return; }
+    modalEl.querySelector(".error")?.remove();
     submitBtnBusy();
     saveActivity({
       member_id: document.getElementById("a-kid").value,
@@ -569,7 +581,7 @@ function openActivityEditor(existing) {
       coach_contact: document.getElementById("a-contact").value.trim(),
       notes: document.getElementById("a-notes").value.trim(),
       emoji: document.getElementById("a-emoji").value.trim() || "⚽",
-    }, a?.id ?? null).catch((err) => showError(err.message));
+    }, a?.id ?? null).catch(saveFailed);
   });
 }
 
@@ -606,6 +618,7 @@ function openSessionEditor(existing) {
     const start = document.getElementById("s-start").value;
     const end = document.getElementById("s-end").value;
     if (start && end && end < start) { showError("End time is before start time."); return; }
+    modalEl.querySelector(".error")?.remove();
     submitBtnBusy();
     saveSession({
       activity_id: document.getElementById("s-activity").value,
@@ -615,7 +628,7 @@ function openSessionEditor(existing) {
       end_time: end,
       location: document.getElementById("s-location").value.trim(),
       notes: document.getElementById("s-notes").value.trim(),
-    }, s?.id ?? null).catch((err) => showError(err.message));
+    }, s?.id ?? null).catch(saveFailed);
   });
 }
 
@@ -637,7 +650,7 @@ document.addEventListener("click", (e) => {
   if (t.hasAttribute("data-add-session")) { openSessionEditor(null); return; }
   if (t.hasAttribute("data-edit-session")) { openSessionEditor(sessions.find((s) => s.id === t.getAttribute("data-edit-session"))); return; }
   if (t.hasAttribute("data-delete-session")) { deleteSession(t.getAttribute("data-delete-session")); return; }
-  if (t.hasAttribute("data-remove-gear")) { removeGear(t.getAttribute("data-remove-gear")).catch((err) => showError(err.message)); return; }
+  if (t.hasAttribute("data-remove-gear")) { removeGear(t.getAttribute("data-remove-gear")).catch((err) => { console.error(err); showError("Couldn’t remove that — try again."); }); return; }
 });
 
 refresh();
