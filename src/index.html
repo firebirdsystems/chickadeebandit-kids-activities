@@ -83,6 +83,8 @@
     .gear-chip button { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: .8rem; padding: 0 1px; }
     .empty { color: var(--muted); text-align: center; padding: 30px 16px; }
     .error { background: var(--red-soft); color: var(--red); padding: 9px 12px; border-radius: 8px; margin-bottom: 10px; font-size: .86rem; }
+    .load-error { margin: 0 0 12px; padding: 10px 14px; border-radius: 10px; background: var(--hub-tint-danger, #fee2e2); color: var(--hub-tint-danger-fg, #b91c1c); font-size: 0.9rem; display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+    .load-error-retry { background: none; border: 1px solid currentColor; border-radius: 8px; padding: 5px 10px; font: inherit; font-weight: 600; color: inherit; cursor: pointer; flex-shrink: 0; }
     .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.42); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; }
     .modal { background: var(--surface); border-radius: 14px; padding: 22px; width: 100%; max-width: 470px; box-shadow: 0 20px 60px rgba(0,0,0,.25); max-height: 92vh; overflow-y: auto; }
     .modal h2 { font-size: 1.05rem; margin-bottom: 16px; }
@@ -186,6 +188,7 @@ let gear = [];
 let currentActivityId = "all";
 let searchQ = "";       // in-app search (see logic.js searchableFields)
 let error = "";
+let loadFailed = false; // first load failed; cleared when a load succeeds
 let modalEl = null;
 
 function nowIso() { return new Date().toISOString(); }
@@ -200,8 +203,8 @@ async function db(sql, params = []) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ sql, params }),
   });
-  const json = await res.json();
-  if (json.error) throw new Error(json.error);
+  const json = await res.json().catch(() => null);
+  if (!res.ok || !json || typeof json !== "object" || json.error) throw new Error(json?.error || "Couldn’t reach the hub. Try again.");
   return json;
 }
 
@@ -214,10 +217,11 @@ async function loadMembers() {
       { id: "demo-4", name: "Riley", role: "child" },
     ];
   } else {
-    try {
-      const res = await fetch(`${CONTEXT}?keys=family.members`);
-      members = ((await res.json())["family.members"]) ?? [];
-    } catch { members = []; }
+    // A failed read is a failed load, never an empty household.
+    const res = await fetch(`${CONTEXT}?keys=family.members`);
+    const data = await res.json().catch(() => null);
+    if (!res.ok || !data || typeof data !== "object" || (Array.isArray(data.$errors) && data.$errors.includes("family.members"))) throw new Error("Couldn’t load members");
+    members = data["family.members"] ?? [];
   }
   memberMap = new Map(members.map((m) => [m.id, m]));
   me = HUB_MEMBER ?? members[0] ?? { id: "guest", name: "Guest", role: "adult" };
@@ -255,9 +259,10 @@ async function refresh() {
   error = "";
   try {
     await Promise.all([loadMembers(), loadData()]);
+    loadFailed = false;
     if (currentActivityId !== "all" && !activities.some((a) => a.id === currentActivityId)) currentActivityId = "all";
     render();
-  } catch (e) { error = e.message; render(); }
+  } catch { loadFailed = true; render(); }
 }
 
 function showError(msg) { error = msg; render(); }
@@ -422,6 +427,14 @@ function render() {
   const root = document.getElementById("root");
   root.className = "app-root";
   const acts = sortedActivities(activities);
+
+  // Nothing was read: no "No activities yet", and nothing to add onto.
+  if (loadFailed) {
+    root.innerHTML = `
+      <div class="topbar"><h1>${glyph("ball")} Kids' Activities</h1></div>
+      <div class="load-error" data-testid="load-error" role="alert"><span>Couldn’t load activities.</span> <button type="button" class="load-error-retry" data-testid="load-retry">Try again</button></div>`;
+    return;
+  }
 
   if (!acts.length) {
     root.innerHTML = `
@@ -610,6 +623,7 @@ function openSessionEditor(existing) {
 document.addEventListener("click", (e) => {
   const t = e.target.closest("button");
   if (!t) return;
+  if (t.matches('[data-testid="load-retry"]')) { refresh(); return; }
   if (t.hasAttribute("data-tab")) { currentActivityId = t.getAttribute("data-tab"); render(); return; }
   if (t.hasAttribute("data-cancel")) { closeModal(); return; }
   if (t.hasAttribute("data-add-activity")) { openActivityEditor(null); return; }
