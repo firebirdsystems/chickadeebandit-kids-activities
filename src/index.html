@@ -290,8 +290,10 @@ async function syncCalendar() {
 async function saveActivity(fields, existingId) {
   const now = nowIso();
   if (existingId) {
-    await db("UPDATE app_kids_activities__activities SET member_id=?, name=?, season=?, location=?, coach_name=?, coach_contact=?, notes=?, emoji=?, updated_at=? WHERE id=?",
+    const res = await db("UPDATE app_kids_activities__activities SET member_id=?, name=?, season=?, location=?, coach_name=?, coach_contact=?, notes=?, emoji=?, updated_at=? WHERE id=?",
       [fields.member_id, fields.name, fields.season, fields.location, fields.coach_name, fields.coach_contact, fields.notes, fields.emoji, now, existingId]);
+    // The hub answers 200 with changed: 0 for a write it narrowed: nothing was saved.
+    if (res.changed === 0) { refresh(); throw new Error("Activity not saved"); }
     const idx = activities.findIndex((a) => a.id === existingId);
     if (idx !== -1) activities[idx] = { ...activities[idx], ...fields, updated_at: now };
     closeModal(); render();
@@ -322,7 +324,8 @@ async function archiveActivity(id) {
   if (currentActivityId === id) currentActivityId = "all";
   closeModal(); render();
   try {
-    await db("UPDATE app_kids_activities__activities SET archived = 1 WHERE id = ?", [id]);
+    const res = await db("UPDATE app_kids_activities__activities SET archived = 1 WHERE id = ?", [id]);
+    if (res.changed === 0) { await refresh(); showError("Couldn’t archive the activity — try again."); return; }
     syncCalendar();
   } catch (e) { console.error(e); activities = prev; showError("Couldn’t archive the activity — try again."); }
 }
@@ -330,8 +333,9 @@ async function archiveActivity(id) {
 async function saveSession(fields, existingId) {
   const now = nowIso();
   if (existingId) {
-    await db("UPDATE app_kids_activities__sessions SET activity_id=?, kind=?, session_date=?, start_time=?, end_time=?, location=?, notes=? WHERE id=?",
+    const res = await db("UPDATE app_kids_activities__sessions SET activity_id=?, kind=?, session_date=?, start_time=?, end_time=?, location=?, notes=? WHERE id=?",
       [fields.activity_id, fields.kind, fields.session_date, fields.start_time, fields.end_time, fields.location, fields.notes, existingId]);
+    if (res.changed === 0) { refresh(); throw new Error("Session not saved"); }
     const idx = sessions.findIndex((s) => s.id === existingId);
     if (idx !== -1) sessions[idx] = { ...sessions[idx], ...fields };
   } else {
@@ -351,7 +355,8 @@ async function deleteSession(id) {
   sessions = sessions.filter((s) => s.id !== id);
   closeModal(); render();
   try {
-    await db("DELETE FROM app_kids_activities__sessions WHERE id = ?", [id]);
+    const res = await db("DELETE FROM app_kids_activities__sessions WHERE id = ?", [id]);
+    if (res.changed === 0) { await refresh(); showError("Couldn’t delete the session — try again."); return; }
     syncCalendar();
   } catch (e) { console.error(e); sessions = prev; showError("Couldn’t delete the session — try again."); }
 }
@@ -376,7 +381,10 @@ async function removeGear(id) {
   const prev = gear;
   gear = gear.filter((g) => g.id !== id);
   render();
-  try { await db("DELETE FROM app_kids_activities__gear WHERE id = ?", [id]); }
+  try {
+    const res = await db("DELETE FROM app_kids_activities__gear WHERE id = ?", [id]);
+    if (res.changed === 0) { await refresh(); showError("Couldn’t remove that — try again."); }
+  }
   catch (e) { console.error(e); gear = prev; showError("Couldn’t remove that — try again."); }
 }
 
