@@ -526,9 +526,15 @@ function submitBtnBusy(busy = true) {
 // A refused save: the form is still open as typed, so say it there and give
 // the button back.
 function saveFailed() {
-  const actions = modalEl?.querySelector(".modal-actions");
-  if (!actions) { showError("Couldn’t save — try again."); return; }
   submitBtnBusy(false);
+  formError("Couldn’t save — try again.");
+}
+
+// The open form's own error line, above its buttons: the page's error line is
+// drawn behind the dialog, where nobody filling the form in can read it.
+function formError(msg) {
+  const actions = modalEl?.querySelector(".modal-actions");
+  if (!actions) { showError(msg); return; }
   let line = modalEl.querySelector(".error");
   if (!line) {
     line = document.createElement("div");
@@ -536,7 +542,7 @@ function saveFailed() {
     line.setAttribute("role", "alert");
     actions.before(line);
   }
-  line.textContent = "Couldn’t save — try again.";
+  line.textContent = msg;
 }
 
 function openActivityEditor(existing) {
@@ -617,7 +623,7 @@ function openSessionEditor(existing) {
     if (!date) { document.getElementById("s-date").focus(); return; }
     const start = document.getElementById("s-start").value;
     const end = document.getElementById("s-end").value;
-    if (start && end && end < start) { showError("End time is before start time."); return; }
+    if (start && end && end < start) { formError("End time is before start time."); return; }
     modalEl.querySelector(".error")?.remove();
     submitBtnBusy();
     saveSession({
