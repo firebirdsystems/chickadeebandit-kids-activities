@@ -126,7 +126,7 @@ import {
 import {
   SESSION_KINDS, sessionKindMeta, upcomingSessions,
   sessionDayLabel, fmtTimeRange, sortedActivities, isoDay, searchableFields,
-  buildCalendarEvents, failureLine,
+  buildCalendarEvents, failureLine, outcomeUnknown, storedDiffers, SAVED_AS_FIRST,
 } from "./logic.js";
 import { createShareUi, createOverlayView } from "./share.js";
 
@@ -294,11 +294,30 @@ async function syncCalendar() {
   }).catch(() => {});
 }
 
+/**
+ * Retry after a lost response: a create whose answer leaves the outcome
+ * unknown is read back by its pinned id. Returns the stored row when an
+ * earlier try landed; otherwise rethrows the write's error (the id stays
+ * pinned for the next press).
+ */
+async function landedUnheard(e, table, cols, id) {
+  if (!DB || !outcomeUnknown(e)) throw e;
+  let stored = null;
+  try { stored = (await db(`SELECT ${cols} FROM ${table} WHERE id = ?`, [id])).rows?.[0] ?? null; }
+  catch (readErr) { console.error(readErr); }
+  if (!stored) throw e;
+  console.error(e);
+  return stored;
+}
+
 /* ── Mutations ─────────────────────────────────────────────────────────────── */
 // saveActivity and saveSession send the write before anything is drawn: the
 // form stays open until the hub has the row, and a refused write throws to the
 // form's submit handler, which says so there and leaves what was typed in place.
-async function saveActivity(fields, existingId) {
+// A create's id is the form's (`pinHost`), minted on its first Save and sent on
+// every retry: a try whose answer was lost may have stored the row, and a
+// second press must find that row rather than add another.
+async function saveActivity(fields, existingId, pinHost = null) {
   const now = nowIso();
   if (existingId) {
     const res = await db("UPDATE app_kids_activities__activities SET member_id=?, name=?, season=?, location=?, coach_name=?, coach_contact=?, notes=?, emoji=?, updated_at=? WHERE id=?",
@@ -310,11 +329,22 @@ async function saveActivity(fields, existingId) {
     closeModal(); render();
     syncCalendar();
   } else {
-    const row = { id: crypto.randomUUID(), ...fields, archived: 0, created_by: me.id, created_at: now, updated_at: now };
-    await db("INSERT INTO app_kids_activities__activities (id, member_id, name, season, location, coach_name, coach_contact, notes, emoji, archived, created_by, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,0,?,?,?)",
-      [row.id, row.member_id, row.name, row.season, row.location, row.coach_name, row.coach_contact, row.notes, row.emoji, row.created_by, now, now]);
-    activities = [...activities, row];
+    const id = pinHost ? (pinHost.rowId ??= crypto.randomUUID()) : crypto.randomUUID();
+    let row = { id, ...fields, archived: 0, created_by: me.id, created_at: now, updated_at: now };
+    let note = "";
+    try {
+      await db("INSERT INTO app_kids_activities__activities (id, member_id, name, season, location, coach_name, coach_contact, notes, emoji, archived, created_by, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,0,?,?,?)",
+        [row.id, row.member_id, row.name, row.season, row.location, row.coach_name, row.coach_contact, row.notes, row.emoji, row.created_by, now, now]);
+    } catch (e) {
+      // Found: an earlier try landed and its success path runs now, once.
+      row = await landedUnheard(e, "app_kids_activities__activities", "id, member_id, name, season, location, coach_name, coach_contact, notes, emoji, archived, created_by, created_at, updated_at", id);
+      // Edited since that first try: what was stored is kept, and said so.
+      if (storedDiffers(row, fields)) note = SAVED_AS_FIRST;
+    }
+    if (pinHost) delete pinHost.rowId;
+    activities = [...activities.filter((a) => a.id !== row.id), row];
     currentActivityId = row.id;
+    error = note;
     closeModal(); render();
     // The SEASON is the event, not the sessions: adding a practice is
     // routine schedule upkeep and a season's worth of them lands in one go.
@@ -341,8 +371,9 @@ async function archiveActivity(id) {
   } catch (e) { console.error(e); activities = prev; showError(failureLine(e, { action: "archive the activity", thing: "activity" })); }
 }
 
-async function saveSession(fields, existingId) {
+async function saveSession(fields, existingId, pinHost = null) {
   const now = nowIso();
+  let note = "";
   if (existingId) {
     const res = await db("UPDATE app_kids_activities__sessions SET activity_id=?, kind=?, session_date=?, start_time=?, end_time=?, location=?, notes=? WHERE id=?",
       [fields.activity_id, fields.kind, fields.session_date, fields.start_time, fields.end_time, fields.location, fields.notes, existingId]);
@@ -350,11 +381,19 @@ async function saveSession(fields, existingId) {
     const idx = sessions.findIndex((s) => s.id === existingId);
     if (idx !== -1) sessions[idx] = { ...sessions[idx], ...fields };
   } else {
-    const row = { id: crypto.randomUUID(), ...fields, created_by: me.id, created_at: now };
-    await db("INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, location, notes, created_by, created_at) VALUES (?,?,?,?,?,?,?,?,?,?)",
-      [row.id, row.activity_id, row.kind, row.session_date, row.start_time, row.end_time, row.location, row.notes, row.created_by, now]);
-    sessions = [...sessions, row];
+    const id = pinHost ? (pinHost.rowId ??= crypto.randomUUID()) : crypto.randomUUID();
+    let row = { id, ...fields, created_by: me.id, created_at: now };
+    try {
+      await db("INSERT INTO app_kids_activities__sessions (id, activity_id, kind, session_date, start_time, end_time, location, notes, created_by, created_at) VALUES (?,?,?,?,?,?,?,?,?,?)",
+        [row.id, row.activity_id, row.kind, row.session_date, row.start_time, row.end_time, row.location, row.notes, row.created_by, now]);
+    } catch (e) {
+      row = await landedUnheard(e, "app_kids_activities__sessions", "id, activity_id, kind, session_date, start_time, end_time, location, notes, created_by, created_at", id);
+      if (storedDiffers(row, fields)) note = SAVED_AS_FIRST;
+    }
+    if (pinHost) delete pinHost.rowId;
+    sessions = [...sessions.filter((s) => s.id !== row.id), row];
   }
+  error = note;
   closeModal(); render();
   syncCalendar();
 }
@@ -372,14 +411,28 @@ async function deleteSession(id) {
   } catch (e) { console.error(e); sessions = prev; showError(failureLine(e, { action: "delete the session", thing: "session" })); }
 }
 
+// A gear add's id, pinned by activity and name until its outcome is known: the
+// failed word is put back in the field, and sending it again must find a row
+// an earlier try stored rather than add a second chip.
+const gearPins = new Map();
+
 async function addGear(activityId, name) {
-  const row = { id: crypto.randomUUID(), activity_id: activityId, name, sort_order: gear.filter((g) => g.activity_id === activityId).length, created_by: me.id, created_at: nowIso() };
-  gear = [...gear, row];
+  const pinKey = `${activityId}|${name}`;
+  const id = gearPins.get(pinKey) ?? crypto.randomUUID();
+  gearPins.set(pinKey, id);
+  const row = { id, activity_id: activityId, name, sort_order: gear.filter((g) => g.activity_id === activityId).length, created_by: me.id, created_at: nowIso() };
+  gear = [...gear.filter((g) => g.id !== id), row];
   render();
   try {
     await db("INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?,?,?,?,?,?)",
       [row.id, row.activity_id, row.name, row.sort_order, row.created_by, row.created_at]);
+    gearPins.delete(pinKey);
   } catch (e) {
+    // An earlier try that landed: the chip stays, as stored.
+    const stored = await landedUnheard(e, "app_kids_activities__gear", "id, activity_id, name, sort_order, created_by, created_at", id).catch(() => null);
+    if (stored) { gearPins.delete(pinKey); gear = gear.map((g) => (g.id === id ? stored : g)); render(); return; }
+    // A refusal the hub named stored nothing: the next try may mint afresh.
+    if (!outcomeUnknown(e)) gearPins.delete(pinKey);
     console.error(e);
     gear = gear.filter((g) => g.id !== row.id);
     showError(failureLine(e, { action: "add that", thing: "gear item" }));
@@ -521,7 +574,7 @@ function render() {
     const name = input.value.trim();
     if (!name || !current) return;
     input.value = "";
-    addGear(current.id, name).catch((err) => { console.error(err); showError("Couldn’t add that — try again."); });
+    addGear(current.id, name).catch((err) => { console.error(err); showError(failureLine(err, { action: "add that", thing: "gear item" })); });
   });
 }
 
@@ -610,7 +663,7 @@ function openActivityEditor(existing) {
       coach_contact: document.getElementById("a-contact").value.trim(),
       notes: document.getElementById("a-notes").value.trim(),
       emoji: document.getElementById("a-emoji").value.trim() || "⚽",
-    }, a?.id ?? null).catch(saveFailed({ action: "save the activity", thing: "activity" }));
+    }, a?.id ?? null, e.currentTarget.dataset).catch(saveFailed({ action: "save the activity", thing: "activity" }));
   });
 }
 
@@ -657,7 +710,7 @@ function openSessionEditor(existing) {
       end_time: end,
       location: document.getElementById("s-location").value.trim(),
       notes: document.getElementById("s-notes").value.trim(),
-    }, s?.id ?? null).catch(saveFailed({ action: "save the session", thing: "session" }));
+    }, s?.id ?? null, e.currentTarget.dataset).catch(saveFailed({ action: "save the session", thing: "session" }));
   });
 }
 
@@ -679,7 +732,7 @@ document.addEventListener("click", (e) => {
   if (t.hasAttribute("data-add-session")) { openSessionEditor(null); return; }
   if (t.hasAttribute("data-edit-session")) { openSessionEditor(sessions.find((s) => s.id === t.getAttribute("data-edit-session"))); return; }
   if (t.hasAttribute("data-delete-session")) { deleteSession(t.getAttribute("data-delete-session")); return; }
-  if (t.hasAttribute("data-remove-gear")) { removeGear(t.getAttribute("data-remove-gear")).catch((err) => { console.error(err); showError("Couldn’t remove that — try again."); }); return; }
+  if (t.hasAttribute("data-remove-gear")) { removeGear(t.getAttribute("data-remove-gear")).catch((err) => { console.error(err); showError(failureLine(err, { action: "remove that", thing: "gear item" })); }); return; }
 });
 
 refresh();
