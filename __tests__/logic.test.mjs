@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   sessionKindMeta, daysUntilDate, upcomingSessions, pastSessions,
   sessionDayLabel, fmtTime, fmtTimeRange, sortedActivities, isoDay, searchableFields,
-  buildCalendarEvents, CALENDAR_EXPORT_MAX_EVENTS,
+  buildCalendarEvents, CALENDAR_EXPORT_MAX_EVENTS, failureLine,
 } from "../src/logic.js";
 
 const FROM = new Date(2026, 6, 12, 9, 0, 0); // Sunday July 12, 2026 local
@@ -189,5 +189,42 @@ describe("buildCalendarEvents", () => {
     const out = build(sessions);
     expect(out).toHaveLength(CALENDAR_EXPORT_MAX_EVENTS);
     expect(out[0].id).toBe("s0");
+  });
+});
+
+describe("failureLine", () => {
+  const words = { action: "save the activity", thing: "activity" };
+  const err = (props, message = "hub text") => Object.assign(new Error(message), props);
+
+  it("names a duplicate by its code, or by the hub's text where production lags", () => {
+    expect(failureLine(err({ status: 400, code: "UNIQUE_CONSTRAINT" }), words)).toBe("That activity already exists.");
+    expect(failureLine(err({ status: 400 }, "UNIQUE constraint failed: x.id"), words)).toBe("That activity already exists.");
+  });
+  it("says a refusal is a refusal", () => {
+    expect(failureLine(err({ status: 403 }), words)).toBe("You don’t have permission to save the activity.");
+  });
+  it("says storage is full", () => {
+    expect(failureLine(err({ status: 507 }), words)).toBe("The household’s storage is full — free up space first.");
+  });
+  it("says a gone row is gone", () => {
+    expect(failureLine(err({ status: 404 }), words)).toBe("This activity has been removed.");
+    expect(failureLine(err({ outcome: "removed" }), words)).toBe("This activity has been removed.");
+  });
+  it("says a row someone else changed was changed", () => {
+    expect(failureLine(err({ status: 409 }), words)).toBe("This activity was changed by someone else — check it first.");
+    expect(failureLine(err({ outcome: "changed" }), words)).toBe("This activity was changed by someone else — check it first.");
+  });
+  it("says an unguarded write whose row is still there was refused, not changed", () => {
+    expect(failureLine(err({ outcome: "refused" }), words)).toBe("You don’t have permission to save the activity.");
+  });
+  it("asks for a retry when the re-read after changed: 0 failed", () => {
+    expect(failureLine(new Error("write changed nothing"), words)).toBe("Couldn’t save the activity — try again.");
+  });
+  it("asks for a retry only when retrying can work, never showing the hub's text", () => {
+    for (const props of [{}, { status: 400 }, { status: 500 }, { status: 503 }, { status: 200 }]) {
+      expect(failureLine(err(props, "Database request failed (503)"), words)).toBe("Couldn’t save the activity — try again.");
+    }
+    expect(failureLine(new TypeError("Failed to fetch"), words)).toBe("Couldn’t save the activity — try again.");
+    expect(failureLine(undefined, words)).toBe("Couldn’t save the activity — try again.");
   });
 });

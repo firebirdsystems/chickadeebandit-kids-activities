@@ -10,6 +10,24 @@ export const SESSION_KINDS = [
   { value: "event",     label: "Event",     glyph: "calendar" },
 ];
 
+/**
+ * The line a failed write shows. "Try again" only where retrying can work: a
+ * refusal or a gone row says what happened. `e.status` / `e.code` come from the
+ * request helper; `e.outcome` is set by a caller that re-read after a write
+ * changed nothing: "removed" (no row), "refused" (an unguarded `WHERE id = ?`
+ * write whose row is still there: the row policy narrowed it), or "changed"
+ * (a guarded write whose row moved). No outcome (the re-read failed) asks for a
+ * retry. The hub's own text is never shown.
+ */
+export function failureLine(e, { action, thing }) {
+  if (e?.code === "UNIQUE_CONSTRAINT" || /UNIQUE constraint failed/i.test(e?.message ?? "")) return `That ${thing} already exists.`;
+  if (e?.status === 403 || e?.outcome === "refused") return `You don’t have permission to ${action}.`;
+  if (e?.status === 507) return "The household’s storage is full — free up space first.";
+  if (e?.outcome === "removed" || e?.status === 404) return `This ${thing} has been removed.`;
+  if (e?.outcome === "changed" || e?.status === 409) return `This ${thing} was changed by someone else — check it first.`;
+  return `Couldn’t ${action} — try again.`;
+}
+
 const KIND_BY_VALUE = new Map(SESSION_KINDS.map((k) => [k.value, k]));
 
 export function sessionKindMeta(v) {

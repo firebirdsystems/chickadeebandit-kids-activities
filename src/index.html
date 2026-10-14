@@ -126,7 +126,7 @@ import {
 import {
   SESSION_KINDS, sessionKindMeta, upcomingSessions,
   sessionDayLabel, fmtTimeRange, sortedActivities, isoDay, searchableFields,
-  buildCalendarEvents,
+  buildCalendarEvents, failureLine,
 } from "./logic.js";
 import { createShareUi, createOverlayView } from "./share.js";
 
@@ -204,7 +204,9 @@ async function db(sql, params = []) {
     body: JSON.stringify({ sql, params }),
   });
   const json = await res.json().catch(() => null);
-  if (!res.ok || !json || typeof json !== "object" || json.error) throw new Error(json?.error || "Couldn’t reach the hub. Try again.");
+  if (!res.ok || !json || typeof json !== "object" || json.error) {
+    throw Object.assign(new Error(json?.error || "Couldn’t reach the hub. Try again."), { status: res.status, code: json?.code });
+  }
   return json;
 }
 
@@ -267,6 +269,15 @@ async function refresh() {
 
 function showError(msg) { error = msg; render(); }
 
+// A write that changed nothing: re-read, then say whether the row is gone or
+// still there. Every caller's write is a plain `WHERE id = ?`, so a row still
+// there means the hub's row policy refused it. A failed re-read can say
+// neither, so it asks for a retry.
+async function staleWrite(stillThere) {
+  await refresh();
+  return Object.assign(new Error("write changed nothing"), loadFailed ? {} : { outcome: stillThere() ? "refused" : "removed" });
+}
+
 /**
  * Republish the `calendar_events` export so the season shows up on the
  * household calendar and in the ICS feed. Best-effort and never awaited by a
@@ -293,7 +304,7 @@ async function saveActivity(fields, existingId) {
     const res = await db("UPDATE app_kids_activities__activities SET member_id=?, name=?, season=?, location=?, coach_name=?, coach_contact=?, notes=?, emoji=?, updated_at=? WHERE id=?",
       [fields.member_id, fields.name, fields.season, fields.location, fields.coach_name, fields.coach_contact, fields.notes, fields.emoji, now, existingId]);
     // The hub answers 200 with changed: 0 for a write it narrowed: nothing was saved.
-    if (res.changed === 0) { refresh(); throw new Error("Activity not saved"); }
+    if (res.changed === 0) throw await staleWrite(() => activities.some((a) => a.id === existingId));
     const idx = activities.findIndex((a) => a.id === existingId);
     if (idx !== -1) activities[idx] = { ...activities[idx], ...fields, updated_at: now };
     closeModal(); render();
@@ -325,9 +336,9 @@ async function archiveActivity(id) {
   closeModal(); render();
   try {
     const res = await db("UPDATE app_kids_activities__activities SET archived = 1 WHERE id = ?", [id]);
-    if (res.changed === 0) { await refresh(); showError("Couldn’t archive the activity — try again."); return; }
+    if (res.changed === 0) { const e = await staleWrite(() => activities.some((a) => a.id === id)); console.error(e); showError(failureLine(e, { action: "archive the activity", thing: "activity" })); return; }
     syncCalendar();
-  } catch (e) { console.error(e); activities = prev; showError("Couldn’t archive the activity — try again."); }
+  } catch (e) { console.error(e); activities = prev; showError(failureLine(e, { action: "archive the activity", thing: "activity" })); }
 }
 
 async function saveSession(fields, existingId) {
@@ -335,7 +346,7 @@ async function saveSession(fields, existingId) {
   if (existingId) {
     const res = await db("UPDATE app_kids_activities__sessions SET activity_id=?, kind=?, session_date=?, start_time=?, end_time=?, location=?, notes=? WHERE id=?",
       [fields.activity_id, fields.kind, fields.session_date, fields.start_time, fields.end_time, fields.location, fields.notes, existingId]);
-    if (res.changed === 0) { refresh(); throw new Error("Session not saved"); }
+    if (res.changed === 0) throw await staleWrite(() => sessions.some((s) => s.id === existingId));
     const idx = sessions.findIndex((s) => s.id === existingId);
     if (idx !== -1) sessions[idx] = { ...sessions[idx], ...fields };
   } else {
@@ -356,9 +367,9 @@ async function deleteSession(id) {
   closeModal(); render();
   try {
     const res = await db("DELETE FROM app_kids_activities__sessions WHERE id = ?", [id]);
-    if (res.changed === 0) { await refresh(); showError("Couldn’t delete the session — try again."); return; }
+    if (res.changed === 0) { const e = await staleWrite(() => sessions.some((s) => s.id === id)); console.error(e); showError(failureLine(e, { action: "delete the session", thing: "session" })); return; }
     syncCalendar();
-  } catch (e) { console.error(e); sessions = prev; showError("Couldn’t delete the session — try again."); }
+  } catch (e) { console.error(e); sessions = prev; showError(failureLine(e, { action: "delete the session", thing: "session" })); }
 }
 
 async function addGear(activityId, name) {
@@ -368,9 +379,10 @@ async function addGear(activityId, name) {
   try {
     await db("INSERT INTO app_kids_activities__gear (id, activity_id, name, sort_order, created_by, created_at) VALUES (?,?,?,?,?,?)",
       [row.id, row.activity_id, row.name, row.sort_order, row.created_by, row.created_at]);
-  } catch {
+  } catch (e) {
+    console.error(e);
     gear = gear.filter((g) => g.id !== row.id);
-    showError("Couldn’t add that — try again.");
+    showError(failureLine(e, { action: "add that", thing: "gear item" }));
     // The field was cleared when the chip was drawn: put the word back to send again.
     const input = document.getElementById("gear-name");
     if (input && !input.value) input.value = name;
@@ -383,9 +395,9 @@ async function removeGear(id) {
   render();
   try {
     const res = await db("DELETE FROM app_kids_activities__gear WHERE id = ?", [id]);
-    if (res.changed === 0) { await refresh(); showError("Couldn’t remove that — try again."); }
+    if (res.changed === 0) { const e = await staleWrite(() => gear.some((g) => g.id === id)); console.error(e); showError(failureLine(e, { action: "remove that", thing: "gear item" })); }
   }
-  catch (e) { console.error(e); gear = prev; showError("Couldn’t remove that — try again."); }
+  catch (e) { console.error(e); gear = prev; showError(failureLine(e, { action: "remove that", thing: "gear item" })); }
 }
 
 /* ── Rendering ─────────────────────────────────────────────────────────────── */
@@ -533,9 +545,12 @@ function submitBtnBusy(busy = true) {
 
 // A refused save: the form is still open as typed, so say it there and give
 // the button back.
-function saveFailed() {
-  submitBtnBusy(false);
-  formError("Couldn’t save — try again.");
+function saveFailed(words) {
+  return (e) => {
+    console.error(e);
+    submitBtnBusy(false);
+    formError(failureLine(e, words));
+  };
 }
 
 // The open form's own error line, above its buttons: the page's error line is
@@ -595,7 +610,7 @@ function openActivityEditor(existing) {
       coach_contact: document.getElementById("a-contact").value.trim(),
       notes: document.getElementById("a-notes").value.trim(),
       emoji: document.getElementById("a-emoji").value.trim() || "⚽",
-    }, a?.id ?? null).catch(saveFailed);
+    }, a?.id ?? null).catch(saveFailed({ action: "save the activity", thing: "activity" }));
   });
 }
 
@@ -642,7 +657,7 @@ function openSessionEditor(existing) {
       end_time: end,
       location: document.getElementById("s-location").value.trim(),
       notes: document.getElementById("s-notes").value.trim(),
-    }, s?.id ?? null).catch(saveFailed);
+    }, s?.id ?? null).catch(saveFailed({ action: "save the session", thing: "session" }));
   });
 }
 
