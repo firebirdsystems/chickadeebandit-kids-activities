@@ -304,7 +304,12 @@ async function landedUnheard(e, table, cols, id) {
   if (!DB || !outcomeUnknown(e)) throw e;
   let stored = null;
   try { stored = (await db(`SELECT ${cols} FROM ${table} WHERE id = ?`, [id])).rows?.[0] ?? null; }
-  catch (readErr) { console.error(readErr); }
+  catch (readErr) {
+    // The id is ours: with the read-back failed, a UNIQUE answer may be this
+    // form's own first try, so nothing is known — "try again", not "already exists".
+    console.error(readErr);
+    throw new Error("create outcome unknown", { cause: e });
+  }
   if (!stored) throw e;
   console.error(e);
   return stored;
@@ -429,13 +434,17 @@ async function addGear(activityId, name) {
     gearPins.delete(pinKey);
   } catch (e) {
     // An earlier try that landed: the chip stays, as stored.
-    const stored = await landedUnheard(e, "app_kids_activities__gear", "id, activity_id, name, sort_order, created_by, created_at", id).catch(() => null);
+    // landedUnheard rethrows `e` itself unless the read-back failed: then the
+    // outcome is unknown and its own error carries the "try again" line.
+    let unknown = null;
+    const stored = await landedUnheard(e, "app_kids_activities__gear", "id, activity_id, name, sort_order, created_by, created_at", id)
+      .catch((err) => { if (err !== e) unknown = err; return null; });
     if (stored) { gearPins.delete(pinKey); gear = gear.map((g) => (g.id === id ? stored : g)); render(); return; }
     // A refusal the hub named stored nothing: the next try may mint afresh.
     if (!outcomeUnknown(e)) gearPins.delete(pinKey);
     console.error(e);
     gear = gear.filter((g) => g.id !== row.id);
-    showError(failureLine(e, { action: "add that", thing: "gear item" }));
+    showError(failureLine(unknown ?? e, { action: "add that", thing: "gear item" }));
     // The field was cleared when the chip was drawn: put the word back to send again.
     const input = document.getElementById("gear-name");
     if (input && !input.value) input.value = name;
