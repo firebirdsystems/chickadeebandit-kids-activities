@@ -59,15 +59,17 @@
       "kind": "adult_writable"
     },
     "sessions": {
-      "kind": "adult_writable",
-      "retain_days": {
-        "default": 730,
-        "timestamp_column": "session_date",
-        "override_key": "session_history"
-      }
+      "kind": "adult_writable"
     },
     "gear": {
       "kind": "adult_writable"
+    }
+  },
+  "retention": {
+    "sessions": {
+      "default": 730,
+      "timestamp_column": "session_date",
+      "override_key": "session_history"
     }
   },
   "shareable": {
@@ -142,9 +144,6 @@
     "kids_activity.season_started": { "require_role": "adult" }
   },
   "nav": { "label": "Activities" },
-  "resource_limits": {
-    "max_db_bytes": 52428800
-  },
   "ai_access": {
     "allowed": true,
     "mode": "read",
