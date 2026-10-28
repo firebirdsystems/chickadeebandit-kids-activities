@@ -10,7 +10,7 @@
 -- and the AI export does too. Free text (names, locations, coach contact,
 -- notes) stays encrypted and is only displayed.
 CREATE TABLE IF NOT EXISTS app_kids_activities__activities (
-  id            TEXT PRIMARY KEY,
+  id            TEXT NOT NULL PRIMARY KEY,
   member_id     TEXT NOT NULL,                  -- the kid this activity belongs to
   name          TEXT NOT NULL,                  -- "U10 Soccer"
   season        TEXT NOT NULL DEFAULT '',       -- "Fall 2026"
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS app_kids_activities__activities (
 );
 
 CREATE TABLE IF NOT EXISTS app_kids_activities__sessions (
-  id           TEXT PRIMARY KEY,
+  id           TEXT NOT NULL PRIMARY KEY,
   activity_id  TEXT NOT NULL,
   kind         TEXT NOT NULL DEFAULT 'practice', -- practice|game|rehearsal|event
   session_date TEXT NOT NULL,                    -- ISO YYYY-MM-DD
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS app_kids_activities__sessions (
 );
 
 CREATE TABLE IF NOT EXISTS app_kids_activities__gear (
-  id          TEXT PRIMARY KEY,
+  id          TEXT NOT NULL PRIMARY KEY,
   activity_id TEXT NOT NULL,
   name        TEXT NOT NULL,                     -- "Shin guards"
   sort_order  INTEGER NOT NULL DEFAULT 0,
